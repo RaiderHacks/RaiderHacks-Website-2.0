@@ -82,3 +82,19 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+/*  Prevents the top jumbotro*/
+/* body { */
+  /* padding-top: 10%; */
+/* } */
+
+/* Makes each jumbotron take up a full page on desktop */
+section {
+  padding-top: 15%;
+  padding-bottom: 15%;
+}
+
+/* Does the smooth scrolling effect on the homepage */
+html {
+  scroll-behavior: smooth;
+}
