@@ -9,8 +9,7 @@ from flask_app.forms import PostForm
 @app.route("/")
 def index():
     db.create_all()
-    posts = Post.query.all()
-    return render_template("index.html", posts=posts)
+    return render_template("index.html")
 
 @app.route("/about")
 def about():
@@ -27,18 +26,23 @@ def register():
         passwd1 = request.form.get('password1')
         passwd2 = request.form.get('password2')
 
+        # Checks if passwords match
         if passwd1 != passwd2 or passwd1 == None:
             flash('Password Error!', 'danger')
             return render_template('register.html')
 
         hashed_pass = sha256_crypt.encrypt(str(passwd1))
-
+        
+        # Calls the User object from flask_app.models
         new_user = User(
-            username=request.form.get('username'),
-            email=request.form.get('username'),
+            # username=request.form.get('username'),
+            first_name=request.form.get('fname'),
+            last_name=request.form.get('lname'),
+            email=request.form.get('email'),
             password=hashed_pass)
 
-        if user_exsists(new_user.username, new_user.email):
+        # removed new_user.username 
+        if user_exsists(new_user.email):
             flash('User already exsists!', 'danger')
             return render_template('register.html')
         else:
@@ -58,11 +62,12 @@ def login():
         return render_template('login.html')
 
     else:
-        username = request.form.get('username')
+        # username = request.form.get('username')
+        email = request.form.get('email')
         password_candidate = request.form.get('password')
 
-        # Query for a user with the provided username
-        result = User.query.filter_by(username=username).first()
+        # Query for a user with the provided email 
+        result = User.query.filter_by(email=email).first()
 
         # If a user exsists and passwords match - login
         if result is not None and sha256_crypt.verify(password_candidate, result.password):
@@ -85,11 +90,11 @@ def logout():
 
 
 # Check if username or email are already taken
-def user_exsists(username, email):
+def user_exsists(email):
     # Get all Users in SQL
     users = User.query.all()
     for user in users:
-        if username == user.username or email == user.email:
+        if email == user.email:
             return True
 
     # No matching user
