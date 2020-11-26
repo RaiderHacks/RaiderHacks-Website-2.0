@@ -1,38 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-
+<link rel="stylesheet" href="static/styles/register.css">
 <div class="container">
   <form action="/register" method="POST">
 
     <div class="form-group">
       <label for="username">First Name</label>
-      <input class="form-control" id="username" name="username" placeholder="Enter username">
+      <input class="form-control" id="username" name="username" placeholder="John">
     </div>
 
     <div class="form-group">
       <label for="username">Last Name</label>
-      <input class="form-control" id="username" name="username" placeholder="Enter username">
+      <input class="form-control" id="username" name="username" placeholder="Doe">
     </div>
 
     <div class="form-group">
-      <label for="username">Username</label>
-      <input class="form-control" id="username" name="username" placeholder="Enter username">
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      <label for="email">Student Email Address</label>
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="form-control" id="email" name="email" placeholder="John.Doe@ttu.edu">
+      <small id="emailHelp" class="form-text text-muted">Must end with ttu.edu</small>
     </div>
 
     <div class="form-group">
       <label for="password1">Password</label>
-      <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+      <input type="password" class="form-control" id="password1" name="password1" placeholder="RaiderPower">
     </div>
 
     <div class="form-group">
       <label for="password2">Confirm Password</label>
-      <input type="password" class="form-control" id="password2" name="password2" placeholder="Password">
+      <input type="password" class="form-control" id="password2" name="password2" placeholder="Don't actually use RaiderPower">
     </div>
 
     <div class="checkbox mb-3">
