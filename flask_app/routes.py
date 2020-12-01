@@ -11,6 +11,11 @@ def index():
     db.create_all()
     return render_template("index.html")
 
+@app.route("/blog")
+def blog():
+    posts = Post.query.all()
+    return render_template("blog.html", posts=posts)
+
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -39,6 +44,7 @@ def register():
             first_name=request.form.get('fname'),
             last_name=request.form.get('lname'),
             email=request.form.get('email'),
+            admin=False,
             password=hashed_pass)
 
         # removed new_user.username 
@@ -103,6 +109,15 @@ def user_exsists(email):
 @app.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
+
+    # Seach database for current users email 
+    result = User.query.filter_by(email=str(current_user)).first()
+
+    # if the admin feild is not true retun 404
+    if result.admin != True:
+        return "<h1> Error 404 </h1>" 
+    
+
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
@@ -110,7 +125,7 @@ def new_post():
         db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('index'))
-    return render_template('create_post.html', title='New Post', form=form, legend='New Post')
+    return render_template('create_post.html', title='New Post', form=form, legend='New Post', whoami=result)
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
