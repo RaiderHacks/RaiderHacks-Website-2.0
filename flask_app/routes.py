@@ -11,6 +11,10 @@ def index():
     db.create_all()
     return render_template("index.html")
 
+@app.route("/meetmemes")
+def meme():
+    return render_template("meet_member.html")
+
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -145,3 +149,5 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('index'))
+
+app.run(debug=True)
