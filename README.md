@@ -1,50 +1,70 @@
+# Simple Flask CRUD Web Application
+This is a very simple Flask Application where user can log in and create posts.
 To submit push requets, your public key
 
+## Application Breakdown
+This is the breakdown of a fairly simple Flask Application using a [SQLite](https://www.sqlite.org/index.html) database
+```
+Flask-on
+│   README.md
+│   FlaskDeployment.md
+│   .gitignore
+│
+└───flask_app
+│   │   __init__.py
+│   │   forms.py
+│   │   models.py
+│   │   routes.py
+│   │   requriments.txt
+│   │   site.db
+│   │
+│   └───static
+│   │   │   ...
+│   │
+│   └───templates
+│   │   │   ...
 must be added to the RaiderHacks git
 
+```
+
+## Flask Frameworks
+These are the [Flask](http://flask.pocoo.org/docs/1.0/) libraries used in this Project. You'll find these in the requirements.txt file.
+- [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)
+- [Flask-Security](https://pythonhosted.org/Flask-Security/)
+- [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/)
+
+## Deploying Locally
+Lets walk through setting up your development environment and deploying this application on your local machine
+
+1. Install Python, pip, and virtualenv
+  - [Python](https://www.python.org/)
+  - [pip](https://pip.pypa.io/en/stable/installing/)
+  - [Virtualenv](https://virtualenv.pypa.io/en/latest/installation/)
+
+2. Clone this repo and CD into the projects directory
+```
+git clone https://github.com/RaiderHacks/RaiderHacks-Website-2.0 flask_app_project
+cd flask_app_project
+```
+3. Create and activate a virtualenv
+```
+virtualenv venv
+source venv/bin/activate
+```
+4. Install packages
+```
+pip install -r flask_app/requirements.txt
+```
+5. Create Flask environment variables
+```
+export FLASK_APP=flask_app/__init__.py
+export FLASK_ENV=development
+Windows:
+  $env:FLASK_APP = "__init__.py"
+  python -m flask run
+```
+6. Run it
+```
+flask run
+```
 server.
-
-Good news. The RaiderHacks SSH Git Server
-
-actually accepted my ed25519-sk key, even
-
-though it requires touch-based FIDO U2F.
-
-This makes the Git Server I set up more
-
-secure and trustworthy than even GitHub's
-
-or even GitLab's. Neither of them support
-
-U2F-based public key authentication at this
-
-time, let alone U2F-based Ed25519 public
-
-key authentication.
-
-
-It is now my responsibility to assist the
-
-RaiderHacks use this new Git server.
-
-Everyone is required to digitally sign
-
-their commits as reliable assurance that
-
-they are the real person performing the 
-
-git commit and not someone unwelcome.
-
-Everyone contributing the RaiderHacks
-
-website must posses their own U2F key
-
-to digitally sign their git commits
-
-with the help of GPG.
-
-It is my responsibility, Tanveer, to
-
-ensure that everyone understands how
-
-that works.
