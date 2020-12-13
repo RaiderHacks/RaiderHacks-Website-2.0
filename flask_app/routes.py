@@ -48,7 +48,7 @@ def register():
             password=hashed_pass)
 
         # removed new_user.username 
-        if user_exsists(new_user.email):
+        if user_exists(new_user.email):
             flash('User already exsists!', 'danger')
             return render_template('register.html')
         else:
