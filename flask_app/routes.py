@@ -11,6 +11,14 @@ def index():
     db.create_all()
     return render_template("index.html")
 
+@app.route("/meetmemes")
+def meetmemes():
+    return render_template("meet_member.html")
+
+@app.route("/achievements")
+def achievements():
+    return render_template("achievements.html")
+
 @app.route("/blog")
 def blog():
     posts = Post.query.all()
