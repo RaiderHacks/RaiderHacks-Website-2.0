@@ -71,4 +71,8 @@ reliable assurance git commits are coming from
 
 the actual person that claims to be someone.
 
-My GPG key fingerprint is: C20F226A5A31A184C7FD5D4C063265EFAFADD1FF
+My GPG key fingerprint is: 175D5E863DF1BDEFBF34CE5AEDCB0582B9A05B98.
+
+The GPG secret key must be passwordless for this
+
+to work.
