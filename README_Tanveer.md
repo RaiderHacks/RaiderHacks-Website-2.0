@@ -144,3 +144,11 @@ Attempting to digitally sign both commit and push request--without
 the Yubikey inserted into the computer. We need to make sure
 
 this will NOT work without the Yubikey being readable by the computer!
+
+----------------------------------------------------------------------
+
+December 14, 2020 8:04:37 AM
+
+Attempting to digitally sign both commit and push request with touch
+
+policy enabled on Yubikey.
