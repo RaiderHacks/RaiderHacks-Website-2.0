@@ -102,3 +102,25 @@ Sixth test.
 Seventh test.
 
 Eighth test.
+
+----------------------------------------------------------------------
+
+So the reason git commit signatures were failing is because
+
+I forgot one final step. You HAVE to activate gpg-agent using the
+
+following command:
+
+$export GPG_TTY=$(tty)
+
+To ensure that your git commit signature works properly, do the following:
+
+1. Enter the directory of your local repository 
+
+2. git config user.signingkey [FULL GPG FINGERPRINT HERE; NEVER USE SHORT FINGERPRINT ID]
+
+3. export GPG_TTY=$(tty) #This launches the gpg-agent. Without doing this, the signing
+
+of the git commit WILL fail (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/telling-git-about-your-signing-key)
+
+
