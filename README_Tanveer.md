@@ -84,3 +84,7 @@ Test actually failed. Trying again with
 C20F226A5A31A184C7FD5D4C063265EFAFADD1FF.
 
 This key has the short ID format: 063265EFAFADD1FF.
+
+For some reason, GPG keys protected by a secret passphrase
+
+fail for git commits.
