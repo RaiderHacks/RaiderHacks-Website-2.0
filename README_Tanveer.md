@@ -134,3 +134,13 @@ Attempting to perform a git-push --signed=true push request
 December 14, 2020 8:04:37 AM
 
 Attempting to digitally sign commit and push request--both!
+
+----------------------------------------------------------------------
+
+December 14, 2020 8:04:37 AM
+
+Attempting to digitally sign both commit and push request--without
+
+the Yubikey inserted into the computer. We need to make sure
+
+this will NOT work without the Yubikey being readable by the computer!
