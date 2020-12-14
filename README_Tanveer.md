@@ -48,3 +48,26 @@ It is my responsibility, Tanveer, to
 ensure that everyone understands how
 
 that works.
+
+----------------------------------------------
+
+December 13, 2020
+
+Dear All of You,
+
+I have set aside an actual GPG key that I will
+
+use to sign all my git commits. It is meant
+
+to be exclusively used for all RaiderHacks's
+
+development. I will send and teach all of
+
+you how to use GPG.
+
+The reason we care about this is so we have
+
+reliable assurance git commits are coming from
+
+the actual person that claims to be someone.
+
