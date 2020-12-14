@@ -123,4 +123,6 @@ To ensure that your git commit signature works properly, do the following:
 
 of the git commit WILL fail (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/telling-git-about-your-signing-key)
 
+----------------------------------------------------------------------
 
+Attempting to perform a git-push --signed=true push request
