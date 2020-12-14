@@ -78,3 +78,9 @@ The GPG secret key must be passwordless for this
 to work.
 
 Testing with Joseph's trusted GPG key.
+
+Test actually failed. Trying again with
+
+C20F226A5A31A184C7FD5D4C063265EFAFADD1FF.
+
+This key has the short ID format: 063265EFAFADD1FF.
