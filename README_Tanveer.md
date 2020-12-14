@@ -77,4 +77,4 @@ The GPG secret key must be passwordless for this
 
 to work.
 
-Testing
+Testing with Joseph's trusted GPG key.
