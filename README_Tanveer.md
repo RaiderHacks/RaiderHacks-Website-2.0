@@ -129,3 +129,8 @@ December 14, 2020
 
 Attempting to perform a git-push --signed=true push request
 
+----------------------------------------------------------------------
+
+December 14, 2020 8:04:37 AM
+
+Attempting to digitally sign commit and push request--both!
