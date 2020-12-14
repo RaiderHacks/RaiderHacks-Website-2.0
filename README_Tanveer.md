@@ -88,3 +88,13 @@ This key has the short ID format: 063265EFAFADD1FF.
 For some reason, GPG keys protected by a secret passphrase
 
 fail for git commits.
+
+Second test for commit using C20F226A5A31A184C7FD5D4C063265EFAFADD1FF.
+
+Third test.
+
+Fourth test.
+
+Fifth test.
+
+Sixth test.
