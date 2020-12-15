@@ -152,3 +152,13 @@ December 14, 2020 8:04:37 AM
 Attempting to digitally sign both commit and push request with touch
 
 policy enabled on Yubikey.
+
+----------------------------------------------------------------------
+
+December 14, 2020 10:09:47 PM
+
+Attempting to sign git push properly now that receive.certNonceSeed (HMAC)
+
+has been configured locally
+
+
