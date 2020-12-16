@@ -19,6 +19,11 @@ def meetmemes():
 def achievements():
     return render_template("achievements.html")
 
+@app.route("/addachievements")
+def addachievements():
+    return render_template("addachievements.html")
+
+
 @app.route("/blog")
 def blog():
     posts = Post.query.all()
