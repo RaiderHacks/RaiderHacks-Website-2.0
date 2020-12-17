@@ -38,3 +38,15 @@ class Addachievements(db.model):
 
     def __repr__(self):
         return(self.id)
+
+class Addmembers(db.model):
+    memberstID= db.Column(db.Integer, primary_key=True)
+    postTitle= db.Column(db.String(120), nullable=False)
+    postImage= db.Column(db.LargeBinary, nullable=False)
+    content= db.Column(db.String(120), nullable=False)
+    userID= db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return(self.id)
+
+
