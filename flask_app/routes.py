@@ -11,6 +11,19 @@ def index():
     db.create_all()
     return render_template("index.html")
 
+@app.route("/meetmembers")
+def meetmembers():
+    return render_template("meet_member.html")
+
+@app.route("/achievements")
+def achievements():
+    return render_template("achievements.html")
+
+@app.route("/addachievements")
+def addachievements():
+    return render_template("addachievements.html")
+
+
 @app.route("/blog")
 def blog():
     posts = Post.query.all()
