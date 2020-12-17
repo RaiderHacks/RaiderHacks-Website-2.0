@@ -1,13 +1,27 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+<<<<<<< HEAD
 
+=======
+from flask_mail import Mail, Message
+>>>>>>> ca5a9a6ee62c5bbbf477af4c04c46f9b9a79c26e
 
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '1A37BbcCJh67'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'raiderHacksMail@gmail.com'
+app.config['MAIL_PASSWORD'] = ''
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+
 db = SQLAlchemy(app)
 
 
