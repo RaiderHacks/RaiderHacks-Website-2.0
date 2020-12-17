@@ -98,3 +98,14 @@ section {
 html {
   scroll-behavior: smooth;
 }
+
+.texty{
+  text-align: center;
+}
+
+
+
+#abouttext{
+  text-align: center;
+} 
+
