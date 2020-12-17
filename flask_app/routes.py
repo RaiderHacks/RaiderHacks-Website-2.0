@@ -2,9 +2,11 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from passlib.hash import sha256_crypt
 
-from flask_app import app, db
+from flask_app import app, db, mail, Message
 from flask_app.models import User, Post
 from flask_app.forms import PostForm
+
+
 
 @app.route("/")
 def index():
@@ -26,6 +28,7 @@ def addachievements():
 
 @app.route("/blog")
 def blog():
+    
     posts = Post.query.all()
     return render_template("blog.html", posts=posts)
 
@@ -57,14 +60,19 @@ def register():
             first_name=request.form.get('fname'),
             last_name=request.form.get('lname'),
             email=request.form.get('email'),
-            admin=False,
-            password=hashed_pass)
-
+            password=hashed_pass,
+            permissions=1)
         # removed new_user.username 
-        if user_exists(new_user.email):
+        if user_exsists(new_user.email):
             flash('User already exsists!', 'danger')
             return render_template('register.html')
         else:
+            recipiants = ['notjoemartinez@protonmail.com']
+            for email in recipiants:
+                msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
+                msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
+                mail.send(msg)
+
             # Insert new user into SQL
             db.session.add(new_user)
             db.session.commit()
@@ -127,10 +135,8 @@ def new_post():
     result = User.query.filter_by(email=str(current_user)).first()
 
     # if the admin feild is not true retun 404
-    if result.admin != True:
-        return "<h1> Error 404 </h1>" 
-    
-
+    if result.permissions != 3:
+        return "<h1> You do not have permissions to view this page</h1>" 
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
