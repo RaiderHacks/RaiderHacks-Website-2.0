@@ -40,7 +40,7 @@ class Addachievements(db.model):
         return(self.id)
 
 class Addmembers(db.model):
-    memberstID= db.Column(db.Integer, primary_key=True)
+    membersID= db.Column(db.Integer, primary_key=True)
     postTitle= db.Column(db.String(120), nullable=False)
     postImage= db.Column(db.LargeBinary, nullable=False)
     content= db.Column(db.String(120), nullable=False)
