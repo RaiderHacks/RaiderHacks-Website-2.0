@@ -168,3 +168,9 @@ December 14, 2020 10:36:05 PM
 Attempting to sign git push properly again. Found actual push certificates
 
 after typing git-receive-pack.
+
+----------------------------------------------------------------------
+
+December 19, 2020 12:57:55 PM
+
+Attempting to push remotely to auth only by default.
