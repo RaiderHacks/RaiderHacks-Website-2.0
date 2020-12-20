@@ -1,11 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-<<<<<<< HEAD
-
-=======
 from flask_mail import Mail, Message
->>>>>>> ca5a9a6ee62c5bbbf477af4c04c46f9b9a79c26e
 
 
 app = Flask(__name__)
