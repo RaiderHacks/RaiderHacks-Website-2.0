@@ -87,11 +87,90 @@ to verify the user as legitimate.
 	Introducing Server Relief
 
 	
-	In Server Relief, the client directly hashes their own password--using their username
+	In Server Relief:
 
-	as a salt--directly on their browser. LibSodium has published a Javascript version
+	
+	1. The client first directly hashes their own password--using their username
 
-	of their cryptographic library that allows this to happen.
+	as a salt--directly on their browser. LibSodium has published a Javascript 
 
+	version of their cryptographic library that allows this to happen. The password
+
+	is actually not hashed using the exact API call described above (crypto_pwhash_str)
+
+	but simply hashes the password into a hash all by itself. This hashing process on 
+
+	the client's browser should take at least a second.
+
+	
+	2. At this point, the parameters for hashing using crypto_pwhash 
+
+	will be the following:
+
+	
+	CPU cycle parameter: crypto_pwhash_OPSLIMIT_INTERACTIVE
+
+	
+	RAM parameters: crypto_pwhash_MEMLIMIT_MODERATE. This requires 256 MiB of RAM. 
+
+	It will take about 0.7 seconds on a 2.8 GHZ Intel Core i7 CPU. This value
+
+	may be increased to ensure the process only takes at least a second--even
+
+	on the newly installed Red Raider Clusters :).
+
+	
+	The hash will be outputted into base64 encoded form and sent to the server
+
+	in that encoding. This ensures the binary data is transmitted properly.
+
+	Do not forget that HSTS-Preloading should be enforced or the hash the 
+
+	client sends can get confiscated.	
 		
+	
+	3. On the server, the server will translate the base64 encoded hash and 
 
+	translate it back to raw binary data form in its RAM. Now the server
+
+	hashes once again--except the server does a very weak hash--just to make
+
+	sure the new hash is different than the previous. What is the whole point
+
+	of re-hashing again? 
+	
+	
+	4. Planning Ahead of Time: In the future, the password database will get
+
+	stolen. Always does. Just look at all those password breaches from
+
+	password management companies. Since the server needs to automatically be
+
+	able to access the database, the password database file needs to have the
+
+	correct chmod permissions to be able to access it. Just to be clear, there
+
+	is NO reason to encrypt the password database file. The passwords are stored
+
+	in hashed form for a reason. In the event the password database file gets
+
+	stolen, it is the problem of the attacker to crack each user's password.
+
+	
+	So going back to your question on why re-hashing is important. The answer
+
+	is straightforward: so the hash the client sends to the server is NOT the
+
+	only piece of information the attacker needs to authenticate as that user.
+
+	Imagine how awful it would be if the attacker got his hands on a password 
+
+	database that only stored the password hash string that the client directly 
+
+	sent to the server. They would be able to impersonate as the user immediately
+
+	after stealing the database. By rehashing the hashed password the client sends
+
+	to the server, the attacker is forced to attempt to crack the password using a
+
+	designated password hash cracking tool.
