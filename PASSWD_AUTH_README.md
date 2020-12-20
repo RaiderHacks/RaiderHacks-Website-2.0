@@ -185,4 +185,33 @@ to verify the user as legitimate.
 	
 	The PyNaCl library was chosen for the backend aspect of Server Relief.
 
-		
+
+	So the PyNaCl is actually used for the backend second hashing in the Server Relief
+
+	authentication system. The backend must do crypto_pwhash_str				
+
+	Here is a sample code use case where the minimal password hashing is done on
+
+	the server:
+
+>>> import nacl.pwhash
+
+>>> passwd = b'Password'
+
+>>> salt = b'Salt'
+
+>>> passwd_salt = passwd + salt
+
+>>> nacl.pwhash.argon2id.str(passwd_salt,nacl.pwhash.OPSLIMIT_MIN,nacl.pwhash.MEMLIMIT_MIN)
+
+b'$argon2id$v=19$m=8,t=1,p=1$Y2ug5BM6vfvGdDbm3AKg4A$kgWFYrMGlDwhY8aPE/rMZPsOpfKeawjG7tADXut5Qoc'
+
+
+The API call nacl.pwhash.argon2id.str actually outputs the password hash in the next line
+
+in the final form it is supposed to be in the password database.
+
+
+Now that takes care of the server side.
+
+The client side must use the Javascript binding of Libsodium to accomplish its task.
