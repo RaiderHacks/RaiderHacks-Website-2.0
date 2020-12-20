@@ -196,20 +196,29 @@ to verify the user as legitimate.
 
 >>> import nacl.pwhash
 
->>> passwd = b'Password'
+>>> client_hashed_passwd = b'[client's output of pwhash.kdf() here]'
 
->>> salt = b'Salt'
 
->>> passwd_salt = passwd + salt
-
->>> nacl.pwhash.argon2id.str(passwd_salt,nacl.pwhash.OPSLIMIT_MIN,nacl.pwhash.MEMLIMIT_MIN)
+>>> nacl.pwhash.argon2id.str(client_hashed_passwd,nacl.pwhash.OPSLIMIT_MIN,nacl.pwhash.MEMLIMIT_MIN)
 
 b'$argon2id$v=19$m=8,t=1,p=1$Y2ug5BM6vfvGdDbm3AKg4A$kgWFYrMGlDwhY8aPE/rMZPsOpfKeawjG7tADXut5Qoc'
 
 
 The API call nacl.pwhash.argon2id.str actually outputs the password hash in the next line
 
-in the final form it is supposed to be in the password database.
+in the form it is to be stored in the password database at the time the user is
+
+registering for a new account.
+
+The process seen above is actually performed when the user is registering for an account.
+
+When the user wishes to login, the following must be done:
+
+import nacl.pwhash
+
+>>> client_hashed_passwd = b'[client's output of pwhash.kdf() here]'
+
+>>> nacl.pwhash.argon2id.verify(passwd_str_in_database,client_hashed_passwd)
 
 
 Now that takes care of the server side.
