@@ -73,7 +73,7 @@ to verify the user as legitimate.
 
 	user's password (along with the salt in the hash string) into the user's hash.
 
-	But...if the server simply made that process to short, it would be easier for
+	But...if the server simply made that process too short, it would be easier for
 
 	attackers to crack the password.
 
@@ -84,6 +84,7 @@ to verify the user as legitimate.
 
 	developers have decided to split up the work between server and client.
 
+	
 	Introducing Server Relief
 
 	
@@ -98,12 +99,12 @@ to verify the user as legitimate.
 
 	is actually not hashed using the exact API call described above (crypto_pwhash_str)
 
-	but simply hashes the password into a hash all by itself. This hashing process on 
+	but simply hashes the password into an array of raw binary bytes all by itself. 
 
-	the client's browser should take at least a second.
+	This hashing process on the client's browser should take at least a second.
 
 	
-	2. At this point, the parameters for hashing using crypto_pwhash 
+	2. At this point, the parameters for hashing using crypto_pwhash on the client side
 
 	will be the following:
 
@@ -299,5 +300,224 @@ Unlike the server's CPU and RAM parameters, the client's CPU and RAM parameters
 are going to be set to crypto_pwhash_OPSLIMIT_MODERATE
 
 and crypto_pwhash_MEMLIMIT_MODERATE.
+
+In Javascript, the javascript version of crypto_pwhash will be used.
+
+The following is example code used for sodium.crypto_pwhash:
+
+<html>
+  <head>
+    <script language="javascript">
+      console.log("starting");
+      window.sodium = {
+        onload: function(sodium) {
+          console.log('hello');
+          let password = 'toor';
+          let salt = sodium.randombytes_buf(sodium.crypto_pwhash_SALTBYTES);
+          let key = sodium.crypto_pwhash(
+            sodium.crypto_secretbox_KEYBYTES,
+            password,
+            salt,
+            sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+            sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE, // 1024 * 1024 * 10 is fine, 11MB breaks
+            sodium.crypto_pwhash_ALG_DEFAULT
+          );
+          console.log(key);
+        }
+      };
+    </script>
+    <script language="javascript" src="sodium.js" async></script>
+  </head>
+  <body>
+    Hello, world
+  </body>
+</html>
+
+That example gives us a strong idea on how to make a Javascript call to 
+
+crypto_pwhash from sodium.js.
+
+
+There are just TWO modifications we need to make to this. The key variable
+
+must be converted to base64 encoded form in order for it to be ready
+
+for transmission to the server.
+
+
+Secondly, the call to randombytes needs to be discarded. If we simply
+
+randomized the salt the call to crypto_pwhash uses on the client side,
+
+then the output password hash would be different each and every time
+
+the user logged in. It would be impossible to verify the client's
+
+authenticity if we did this! So we are forced to use a constant
+
+salt even at the client's side. And the salt used on the client-side
+
+hashing is the actual username of the user.
+
+
+A Footnote About Salting
+
+What is salting and why does it matter? Consider how users' account
+
+credentials are stored in a password database. The format would be
+
+similiar the following:
+
+
+username | email address | [password_hash_string] | [base64_encoded_salt]
+
+
+
+Password databases are supposed to ensure that each and every username is
+
+unique. When a password database discovers that a person is trying to make
+
+a new account with a pre-existing username, it will send an HTTP Response
+
+Text pointing that out and asking the new user to choose a different username.
+
+
+But a good login system should NEVER reveal if a password is already being used
+
+by a pre-existing user. If a login system does, then an attacker can map all 
+
+the passwords used by each username simply by trying out different passwords from
+
+the login page. Dedicated hash cracking tools can make this easy.
+
+
+Instead of doing this, the login system will actually a user to use the same 
+
+password as another user (GASP!) but here is the catch: a special string will
+
+be concatentated to the actual password. And each user will have a unique
+
+special string that is concatenated to the actual password. This way, if two
+
+users have the same password, concatenating each of their passwords with each
+
+of their unique special strings will force of each of those users to have
+
+different [ password_hash_strings ] that are stored in the password database.
+
+
+Security developers have named these special strings that are supposed to be
+
+unique to each user: salts. Without using salts, an attacker can use what
+
+are called Rainbow Tables. To make a rainbow table, an attacker recovers a
+
+list of leaked passwords. You would be surprised how many of these are available
+
+over the Internet. Here is a website that actually gives away files of leaked
+
+passwords: https://wiki.skullsecurity.org/Passwords
+
+(NOTE: The above website does NOT enforce HSTS Preloading Strict-Transport-Security).
+
+
+After recovering a list of leaked passwords, the attacker hashes each and every
+
+password and places the password followed by the hash into a database.
+
+So when an attacker steals a password database--and it is easy to override
+
+chmod permissions than we want to believe--they will simply have to search
+
+the hash to the raw password already in the Rainbow Table.
+
+Salting stops these Rainbow Table Attacks from working since concatenating
+
+the salt string to the original raw password causes a completely new and
+
+unique hash to be outputted.
+
+So below is a diagram of this:
+
+
+Hash(Password) ==> Hash_1 [Placed in Rainbow Table]
+
+Hash(Password+Salt) ==> Hash_2 [Cannot be mapped to the raw password in Rainbow Table]
+
+The point is, salts ruin the usefulness of precomputed tables. Here is a
+
+security.stackexchange post on it:
+
+(https://security.stackexchange.com/questions/51625/time-memory-trade-off-attacks)
+
+
+-----------------------------------------------------------------------------
+
+Using U2F
+
+
+Using server relief for password authentication is nice, but there is still
+
+one last problem: phishing attacks. Despite the invention of HSTS preloading,
+
+phishing attacks that steal account credentials are STILL a problem. It is 
+
+VERY EASY to steal passwords from a computer. Keyloggers are the software
+
+that can be used to steal passwords from a victim. Keyloggers are software
+
+that--after the user downloads onto their computer--record all keystrokes
+
+the user inputs with their keyboard. The keylogger can then send the 
+
+password to a server that belongs to the writer of the keylogger.
+
+Either that, or the password can get stolen from a phishing email.
+
+This is much more likely to happen than a keylogger attack since RaiderHacks
+
+relies on Email verification.
+
+
+So what will stop these attacks from working is a reliable second factor of
+
+authentication. Yubico and Google have worked together to make Yubikeys.
+
+
+So in the event that a user accidentially gives away the password to a keylogger
+
+or a phishing email, the U2F key will be the second factor of authentication
+
+that the attacker will still lack--and therefore be denied admission.
+
+
+U2F keys are hardware devices that perform digital handshake tests using public-key
+
+cryptography. You cannot steal neither the private keys nor public keys from the U2F
+
+device. U2F keys have internal CPUs and memory that only send responses to digital
+
+handshake challenges. To ensure these challenges are only performed at the user's
+
+discretion, the U2F key will refuse to send the challenge response until the user
+
+taps and continually keeps their finger in contact with a button on the U2F device
+
+until the digital handshake test completes. RaiderHacks should have an option
+
+for U2F authentication for this reason.
+
+-----------------------------------------------------------------------------------
+
+Testing for strength of passwords
+
+1. At first Dropbox's ZXCVBN will be used to ensure the user's password is strong
+
+enough to withstand attacks. Basically, zxcvbn in Python is used as the following:
+
+>>> from zxcvbn import zxcvbn
+>>> results = zxcvbn('Password')
+>>> print(results)
+{'password': 'Password', 'guesses': Decimal('5'), 'guesses_log10': 0.6989700043360187, 'sequence': [{'pattern': 'dictionary', 'i': 0, 'j': 7, 'token': 'Password', 'matched_word': 'password', 'rank': 2, 'dictionary_name': 'passwords', 'reversed': False, 'l33t': False, 'base_guesses': 2, 'uppercase_variations': 2, 'l33t_variations': 1, 'guesses': 4, 'guesses_log10': 0.6020599913279623}], 'calc_time': datetime.timedelta(microseconds=16083), 'crack_times_seconds': {'online_throttling_100_per_hour': Decimal('180.0000000000000099920072216'), 'online_no_throttling_10_per_second': Decimal('0.5'), 'offline_slow_hashing_1e4_per_second': Decimal('0.0005'), 'offline_fast_hashing_1e10_per_second': Decimal('5E-10')}, 'crack_times_display': {'online_throttling_100_per_hour': '3 minutes', 'online_no_throttling_10_per_second': 'less than a second', 'offline_slow_hashing_1e4_per_second': 'less than a second', 'offline_fast_hashing_1e10_per_second': 'less than a second'}, 'score': 0, 'feedback': {'warning': 'This is a top-10 common password.', 'suggestions': ['Add another word or two. Uncommon words are better.', "Capitalization doesn't help very much."]}}
 
 
