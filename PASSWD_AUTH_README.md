@@ -181,3 +181,8 @@ to verify the user as legitimate.
 	chosen to be used for this project.
 
 	(https://pynacl.readthedocs.io/en/latest/password_hashing/)
+
+	
+	The PyNaCl library was chosen for the backend aspect of Server Relief.
+
+		
