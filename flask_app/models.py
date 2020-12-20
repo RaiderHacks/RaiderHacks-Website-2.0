@@ -12,7 +12,6 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    # username = db.Column(db.String(20), unique=True, nullable=False)
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -28,27 +27,30 @@ class Post(db.Model):
     title = db.Column(db.String(120), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.String(120), nullable=False)
+    permissions = db.Column(db.Integer(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return(self.id)
 
-class Addachievements(db.model):
-    achievementID= db.Column(db.Integer, primary_key=True)
-    postTitle= db.Column(db.String(120), nullable=False)
-    postImage= db.Column(db.LargeBinary, nullable=False)
-    content= db.Column(db.String(120), nullable=False)
-    userID= db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
+class Addachievements(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    achievement_id = db.Column(db.Integer, primary_key=True)
+    post_title= db.Column(db.String(120), nullable=False)
+    post_image= db.Column(db.LargeBinary, nullable=False)
+    content = db.Column(db.String(120), nullable=False)
+    user_id= db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return(self.id)
 
-class Addmembers(db.model):
-    membersID= db.Column(db.Integer, primary_key=True)
-    postTitle= db.Column(db.String(120), nullable=False)
-    postImage= db.Column(db.LargeBinary, nullable=False)
-    content= db.Column(db.String(120), nullable=False)
-    userID= db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
+class Addmembers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    members_id = db.Column(db.Integer, primary_key=True)
+    post_title = db.Column(db.String(120), nullable=False)
+    post_image = db.Column(db.LargeBinary, nullable=False)
+    content = db.Column(db.String(120), nullable=False)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return(self.id)
