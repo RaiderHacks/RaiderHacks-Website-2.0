@@ -174,3 +174,10 @@ to verify the user as legitimate.
 	to the server, the attacker is forced to attempt to crack the password using a
 
 	designated password hash cracking tool.
+
+	
+	The PyNaCl Library is a Python binding of the original NaCl C library and was
+
+	chosen to be used for this project.
+
+	(https://pynacl.readthedocs.io/en/latest/password_hashing/)
