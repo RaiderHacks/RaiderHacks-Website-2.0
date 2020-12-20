@@ -224,3 +224,80 @@ import nacl.pwhash
 Now that takes care of the server side.
 
 The client side must use the Javascript binding of Libsodium to accomplish its task.
+
+To use Libsodium in browser Javascript, you will need to download the sodium.js file
+
+from the following resource: https://raw.githubusercontent.com/jedisct1/libsodium.js/master/dist/browsers-sumo/
+sodium.js
+
+The file will be found in the other javascript files in this repository.
+
+So the sodium.js file is found in flask_app/static/scripts/sodium.js in this
+
+repository.
+
+In addition to having the sodium.js file, you also need to have the following
+
+script declaration in every HTML file that you intend to call Libsodium
+
+functions from:
+
+<script>
+    window.sodium = {
+        onload: function (sodium) {
+            let h = sodium.crypto_generichash(64, sodium.from_string('test'));
+            console.log(sodium.to_hex(h));
+        }
+    };
+</script>
+<script src="sodium.js" async>
+</script>
+
+The following codepiece demonstrates how to actually use the Javascript
+
+sodium.pwhashh() that the client needs to perform on their browser:
+
+it('crypto_pwhash', async function() {
+        this.timeout(0);
+        if (!sodium) sodium = await test_helper.init();
+        let password = 'correct horse battery staple';
+        let salt = Buffer.from('808182838485868788898a8b8c8d8e8f', 'hex');
+        let hashed =  Buffer.from(
+            sodium.crypto_pwhash(16, password, salt, 2, 65536 << 10, 2)
+        );
+        expect(hashed.toString('hex')).to.be.equals('720f95400220748a811bca9b8cff5d6e');
+    });
+
+
+And the above function call is based on the pwhash function signature:
+
+
+int crypto_pwhash(unsigned char * const out,
+                  unsigned long long outlen,
+                  const char * const passwd,
+                  unsigned long long passwdlen,
+                  const unsigned char * const salt,
+                  unsigned long long opslimit,
+                  size_t memlimit, int alg);
+
+References: 
+
+https://github.com/jedisct1/libsodium.js/blob/master/test/sodium_utils.js
+
+https://doc.libsodium.org/password_hashing/default_phf
+
+The client needs to perform the following hash function from sodium.js
+
+since it allows the user to use an arbitary salt. The salt in this case
+
+will actually be set to 16 NULL bytes ( 0x00000000000000000000000000000000 )
+
+because the actual salt the client will use is its own username.
+
+Unlike the server's CPU and RAM parameters, the client's CPU and RAM parameters
+
+are going to be set to crypto_pwhash_OPSLIMIT_MODERATE
+
+and crypto_pwhash_MEMLIMIT_MODERATE.
+
+
