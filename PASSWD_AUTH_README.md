@@ -450,6 +450,56 @@ security.stackexchange post on it:
 
 (https://security.stackexchange.com/questions/51625/time-memory-trade-off-attacks)
 
+----------------------------------------------------------------------------
+
+Setting Argon2ID Parameters
+
+The user will be given the freedom to set the parameters--for both 
+
+memory used and CPU operation cycles performed--for computing the hash
+
+on the client side. Now, to be clear the password database must NEVER
+
+store the client side hash computed. Only the parameters. I am talking
+
+about the following numbers from the argon2 terminal command user's manual:
+
+Usage:  ./argon2 [-h] salt [-i|-d|-id] [-t iterations] [-m memory] [-p parallelism] [-l hash length] [-e|-r] [-v (10|13)]
+        Password is read from stdin
+Parameters:
+        salt            The salt to use, at least 8 characters
+        -i              Use Argon2i (this is the default)
+        -d              Use Argon2d instead of Argon2i
+        -id             Use Argon2id instead of Argon2i
+        -t N            Sets the number of iterations to N (default = 3)
+        -m N            Sets the memory usage of 2^N KiB (default 12)
+        -p N            Sets parallelism to N threads (default 1)
+        -l N            Sets hash output length to N bytes (default 32)
+        -e              Output only encoded hash
+        -r              Output only the raw bytes of the hash
+        -v (10|13)      Argon2 version (defaults to the most recent version, currently 13)
+        -h              Print argon2 usage
+
+
+The following parameters from the above are what the user will be allowed to tweak
+
+upon registering their password (or resetting their password):
+
+        -t N            Sets the number of iterations to N (default = 3)
+        -m N            Sets the memory usage of 2^N KiB (default 12)
+        -p N            Sets parallelism to N threads (default 1)
+        -l N            Sets hash output length to N bytes (default 32)
+
+
+So an advanced user will be able to set the number of iterations to whatever
+
+they wish it to be (-t), the memory usage (-m), the number of threads
+
+their computer is forced to use, and even the hash output.
+
+There is no risk for the user setting these parameters, since this deals with
+
+the **client side** password.
 
 -----------------------------------------------------------------------------
 
@@ -507,6 +557,14 @@ until the digital handshake test completes. RaiderHacks should have an option
 
 for U2F authentication for this reason.
 
+
+Once U2F is enforced as a second factor of authentication, the attacker will
+
+not only have to steal the user's password. The attacker will also have to
+
+**physically** steal the user's U2F hardware key.
+
+
 -----------------------------------------------------------------------------------
 
 Testing for strength of passwords
@@ -516,8 +574,56 @@ Testing for strength of passwords
 enough to withstand attacks. Basically, zxcvbn in Python is used as the following:
 
 >>> from zxcvbn import zxcvbn
->>> results = zxcvbn('Password')
+
+>>> results = zxcvbn('Passwords are good for you, man')
+
 >>> print(results)
-{'password': 'Password', 'guesses': Decimal('5'), 'guesses_log10': 0.6989700043360187, 'sequence': [{'pattern': 'dictionary', 'i': 0, 'j': 7, 'token': 'Password', 'matched_word': 'password', 'rank': 2, 'dictionary_name': 'passwords', 'reversed': False, 'l33t': False, 'base_guesses': 2, 'uppercase_variations': 2, 'l33t_variations': 1, 'guesses': 4, 'guesses_log10': 0.6020599913279623}], 'calc_time': datetime.timedelta(microseconds=16083), 'crack_times_seconds': {'online_throttling_100_per_hour': Decimal('180.0000000000000099920072216'), 'online_no_throttling_10_per_second': Decimal('0.5'), 'offline_slow_hashing_1e4_per_second': Decimal('0.0005'), 'offline_fast_hashing_1e10_per_second': Decimal('5E-10')}, 'crack_times_display': {'online_throttling_100_per_hour': '3 minutes', 'online_no_throttling_10_per_second': 'less than a second', 'offline_slow_hashing_1e4_per_second': 'less than a second', 'offline_fast_hashing_1e10_per_second': 'less than a second'}, 'score': 0, 'feedback': {'warning': 'This is a top-10 common password.', 'suggestions': ['Add another word or two. Uncommon words are better.', "Capitalization doesn't help very much."]}}
+{'password': 'Passwords are good for you, man', 'guesses': Decimal('269280010000000000000000'), 'guesses_log10': 23.430204114759736, 'sequence': [{'pattern': 'dictionary', 'i': 0, 'j': 7, 'token': 'Password', 'matched_word': 'password', 'rank': 2, 'dictionary_name': 'passwords', 'reversed': False, 'l33t': False, 'base_guesses': 2, 'uppercase_variations': 2, 'l33t_variations': 1, 'guesses': 50, 'guesses_log10': 1.6989700043360185}, {'pattern': 'bruteforce', 'token': 's are ', 'i': 8, 'j': 13, 'guesses': 1000000, 'guesses_log10': 5.999999999999999}, {'pattern': 'dictionary', 'i': 14, 'j': 17, 'token': 'good', 'matched_word': 'good', 'rank': 51, 'dictionary_name': 'us_tv_and_film', 'reversed': False, 'l33t': False, 'base_guesses': 51, 'uppercase_variations': 1, 'l33t_variations': 1, 'guesses': 51, 'guesses_log10': 1.7075701760979363}, {'pattern': 'bruteforce', 'token': ' for you, ', 'i': 18, 'j': 27, 'guesses': 10000000000, 'guesses_log10': 10.0}, {'pattern': 'dictionary', 'i': 28, 'j': 30, 'token': 'man', 'matched_word': 'man', 'rank': 88, 'dictionary_name': 'us_tv_and_film', 'reversed': False, 'l33t': False, 'base_guesses': 88, 'uppercase_variations': 1, 'l33t_variations': 1, 'guesses': 88, 'guesses_log10': 1.9444826721501687}], 'calc_time': datetime.timedelta(microseconds=60197), 'crack_times_seconds': {'online_throttling_100_per_hour': Decimal('9694080360000000538129560.912'), 'online_no_throttling_10_per_second': Decimal('26928001000000000000000'), 'offline_slow_hashing_1e4_per_second': Decimal('26928001000000000000'), 'offline_fast_hashing_1e10_per_second': Decimal('26928001000000')}, 'crack_times_display': {'online_throttling_100_per_hour': 'centuries', 'online_no_throttling_10_per_second': 'centuries', 'offline_slow_hashing_1e4_per_second': 'centuries', 'offline_fast_hashing_1e10_per_second': 'centuries'}, 'score': 4, 'feedback': {'warning': '', 'suggestions': []}}
+
+All passwords on RaiderHacks must receive a score of 4 before they are accepted.
+
+References:
+
+https://github.com/dropbox/zxcvbn
+
+Although the ZXCVBN library will be used for the first version of the RaiderHacks
 
 
+database, a more up-to-date version will be used inspired by the forthcoming
+
+security cracking tool: glados.
+
+Finally, the replacement for ZXCVBN will be inspired by the paper:
+
+Guess Again (and Again and Again): Measuring
+Password Strength by Simulating Password-Cracking
+Algorithms
+
+https://cups.cs.cmu.edu/rshay/pubs/guessagain2012.pdf
+
+
+---------------------------------------------------------------------------------
+
+Detecting Password Cracking Attempts: Honeywords
+
+There is a huge benefit in learning how security protocols are broken.
+
+A person who is well-versed in breaking security protocols should be the actual
+
+person that builds the next up-to-date security protocol defense.
+
+Not only is ZXCVBN useful for measuring the strength of user's passwords before
+
+they are registered onto the online accounts, it will also prove useful
+
+in CATCHING hackers' attempts to break user accounts.
+
+Ronald Rivest, creator of the MD5 message digest algorithm, the 'R' in the famous
+
+"Introduction to Algorithms" textbook, Second Edition, and  the co-creator of
+
+the famous RSA algorithm--has published a paper titled
+
+Fake accounts should be setup so they are **indistinguishable** from real user's
+
+accounts. 
