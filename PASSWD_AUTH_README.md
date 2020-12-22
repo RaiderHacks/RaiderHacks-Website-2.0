@@ -1,5 +1,6 @@
 Server Relief Password Authentication
 
+
 1. This server will follow LibSodium Library's guidelines for password authentication.
 
 These instructions are found at: https://libsodium.gitbook.io/doc/password_hashing#server-relief
@@ -452,56 +453,6 @@ security.stackexchange post on it:
 
 ----------------------------------------------------------------------------
 
-Setting Argon2ID Parameters
-
-The user will be given the freedom to set the parameters--for both 
-
-memory used and CPU operation cycles performed--for computing the hash
-
-on the client side. Now, to be clear the password database must NEVER
-
-store the client side hash computed. Only the parameters. I am talking
-
-about the following numbers from the argon2 terminal command user's manual:
-
-Usage:  ./argon2 [-h] salt [-i|-d|-id] [-t iterations] [-m memory] [-p parallelism] [-l hash length] [-e|-r] [-v (10|13)]
-        Password is read from stdin
-Parameters:
-        salt            The salt to use, at least 8 characters
-        -i              Use Argon2i (this is the default)
-        -d              Use Argon2d instead of Argon2i
-        -id             Use Argon2id instead of Argon2i
-        -t N            Sets the number of iterations to N (default = 3)
-        -m N            Sets the memory usage of 2^N KiB (default 12)
-        -p N            Sets parallelism to N threads (default 1)
-        -l N            Sets hash output length to N bytes (default 32)
-        -e              Output only encoded hash
-        -r              Output only the raw bytes of the hash
-        -v (10|13)      Argon2 version (defaults to the most recent version, currently 13)
-        -h              Print argon2 usage
-
-
-The following parameters from the above are what the user will be allowed to tweak
-
-upon registering their password (or resetting their password):
-
-        -t N            Sets the number of iterations to N (default = 3)
-        -m N            Sets the memory usage of 2^N KiB (default 12)
-        -p N            Sets parallelism to N threads (default 1)
-        -l N            Sets hash output length to N bytes (default 32)
-
-
-So an advanced user will be able to set the number of iterations to whatever
-
-they wish it to be (-t), the memory usage (-m), the number of threads
-
-their computer is forced to use, and even the hash output.
-
-There is no risk for the user setting these parameters, since this deals with
-
-the **client side** password.
-
------------------------------------------------------------------------------
 
 Using U2F
 
@@ -627,3 +578,124 @@ the famous RSA algorithm--has published a paper titled
 Fake accounts should be setup so they are **indistinguishable** from real user's
 
 accounts. 
+
+----------------------------------------------------------------------------------
+
+How the Password Authentication will work:
+
+1. User will type in their username and password.
+
+
+2. The browser will use sodium.js to hash the password--using the username as a
+
+salt. The real password's hash will be generated in 0.5 seconds. This hash
+
+is hereby called H_1.
+
+The fake password will be generated in the other 0.5 seconds. This hash is hereby
+
+called H_0.
+
+
+3. The client-side's hashes are sent to the server. Both the real and fake passwords
+
+are quickly hashed using BLAKE2b. This hash is hereby called H_2. In Libsodium, this 
+
+
+crypto_generic_hash. This is a hash that will be very inexpensive to compute. The 
+
+computer will then use the  output of BLAKE2b to query the correct entry in the 
+
+Auth table. 
+
+There are THREE distinct tables that are necessary for authentication
+
+to take place:
+
+User table:
+
+Formatted as the following:
+
+
+username	|	email address	|	salt_2
+
+
+Auth table:
+
+Formatted as the following
+
+
+H_2	=	BLAK2Eb(H_1	||	salt_2) 
+
+The reason the Auth table is indexed with the verification
+
+hash (H_2) and NOT the username is that the server needs
+
+to figure out if its the correct hash of the real user
+
+or a honey hash (H_3).
+
+
+Honey Table:
+
+H_3
+
+
+
+The computer will quickly check if the username for that entry is correct. If this 
+
+
+simple check fails, the login is deemed incorrect and the client is denied access.
+
+
+
+4. Once the verification hash from the Auth table  passes there is one last test 
+
+the user's password entry needs to pass. The entire database entry depicted above 
+
+
+is fed to the BLAKE2b-based HMAC function.
+
+
+
+In Libsodium, this function is crypto_generichash except this time it will accept H_1
+
+as the key. Any hash function that accepts a symmmetric key and a message to print an ID 
+
+number unique to the key-message combination is an HMAC.
+
+
+So the HMAC goes like this:
+
+
+H_3 = HMAC-BLAKE2b(Key = H_1,H_2  = BLAKE2b verification hash	||	username	||	salt_2)
+
+
+Keep in mind the client-side hash the user sent is NEVER written nor stored anywhere
+
+on the server. So H_1 is the proof of work that forces the attacker to replicate the 
+
+client-side hash--even if the attacker steals all three tables: the User Table, the
+
+Auth table, and even the Honey Tables. The verification hash, and finally the HMAC 
+
+hash before they finally figure out whether or not their cracked password is a fake 
+
+or real one. Bear in mind the attacker will have to steal the User table containg 
+
+every user's username and
+
+email address, the auth table containing every user's H_2 hash. 
+
+
+5. There is a third table that contains a full list of these H_3 hashes for each and every username.
+
+So if a user's H_2 hash is found in the Auth table AND the user's H_3 hash is found in the 
+
+HMAC table--it is the real user. If only the H_2 hash is found--its an attacker.
+
+This setup is heavily inspired by Ronald L Rivest and Ari Juels' paper "Honeywords:
+
+Making Passwords Crackable". 
+
+(https://dspace.mit.edu/bitstream/handle/1721.1/90627/Rivest_Honeywords.pdf?sequence=1&isAllowed=y)
