@@ -19,6 +19,22 @@ def meetmembers():
 def achievements():
     return render_template("achievements.html")
 
+@app.route("/adibachievements")
+def adibachievements():
+    return render_template("adibachievements.html")
+
+@app.route("/pranjalachievements")
+def pranjalachievements():
+    return render_template("pranjalachievements.html")
+
+@app.route("/tanveerachievements")
+def tanveerachievements():
+    return render_template("tanveerachievements.html")
+
+@app.route("/josephachievements")
+def josephachievements():
+    return render_template("josephachievements.html")
+
 @app.route("/addachievements")
 def addachievements():
     return render_template("addachievements.html")
