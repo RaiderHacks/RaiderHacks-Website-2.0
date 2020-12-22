@@ -608,16 +608,9 @@ computer will then use the  output of BLAKE2b to query the correct entry in the
 
 Auth table. 
 
-There are THREE distinct tables that are necessary for authentication
+There are TWO distinct tables that are necessary for authentication
 
 to take place:
-
-User table:
-
-Formatted as the following:
-
-
-username	|	email address	|	salt_2
 
 
 Auth table:
@@ -625,7 +618,8 @@ Auth table:
 Formatted as the following
 
 
-H_2	=	BLAK2Eb(H_1	||	salt_2) 
+H_2	=	BLAK2Eb(H_1,salt_2)	||	username	||	Name	||	Email	||	salt_2 
+
 
 The reason the Auth table is indexed with the verification
 
@@ -660,9 +654,11 @@ is fed to the BLAKE2b-based HMAC function.
 
 In Libsodium, this function is crypto_generichash except this time it will accept H_1
 
-as the key. Any hash function that accepts a symmmetric key and a message to print an ID 
+as the key. Remember, H_1 must NEVER be stored in the Any hash function that accepts a 
 
-number unique to the key-message combination is an HMAC.
+symmmetric key and a message to print an ID  number unique to the key-message combination 
+
+is an HMAC.
 
 
 So the HMAC goes like this:
@@ -675,20 +671,22 @@ Keep in mind the client-side hash the user sent is NEVER written nor stored anyw
 
 on the server. So H_1 is the proof of work that forces the attacker to replicate the 
 
-client-side hash--even if the attacker steals all three tables: the User Table, the
+client-side hash--even if the attacker steals both tables: the Auth Table and the Honey Table. 
 
-Auth table, and even the Honey Tables. The verification hash, and finally the HMAC 
+The verification hash and the HMAC  hash before they finally figure out whether or not their 
 
-hash before they finally figure out whether or not their cracked password is a fake 
+cracked password is a fake or real one. Bear in mind the attacker will have to steal the User 
 
-or real one. Bear in mind the attacker will have to steal the User table containg 
+table containg every user's username and email address, the auth table containing every user's 
 
-every user's username and
-
-email address, the auth table containing every user's H_2 hash. 
+H_2 hash. 
 
 
-5. There is a third table that contains a full list of these H_3 hashes for each and every username.
+5. The Honey table contains a full list of these H_3 hashes for each and every user.
+
+NOTE: Only the H_3 hash needs to be in the Honey Table no other information tied
+
+to the user need be in the Honey Table.
 
 So if a user's H_2 hash is found in the Auth table AND the user's H_3 hash is found in the 
 
