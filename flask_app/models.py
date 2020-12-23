@@ -16,11 +16,12 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    # hmac = db.Column(db.String(128), unique=True, nullable=False)
     permissions = db.Column(db.Integer(), nullable=False, default=1)
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def __repr__(self):
-        return(self.id)
+        return(self.email + ',' + str(self.permissions))
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,7 +32,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return(self.id)
+        return(self.id + ',' + str(self.permissions))
 
 class Addachievements(db.Model):
     id = db.Column(db.Integer, primary_key=True)
