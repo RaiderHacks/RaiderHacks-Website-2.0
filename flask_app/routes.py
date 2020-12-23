@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from passlib.hash import sha256_crypt
+from sqlalchemy import or_
 
 from flask_app import app, db, mail, Message
 from flask_app.models import User, Post
@@ -25,12 +26,30 @@ def achievements():
 def addachievements():
     return render_template("addachievements.html")
 
-
 @app.route("/blog")
 def blog():
-    
-    posts = Post.query.all()
-    return render_template("blog.html", posts=posts)
+
+    # check to see if the user is logged in if this is the case return posts with the pemissions level 1
+    if current_user.is_anonymous == True:
+        posts = Post.query.filter(Post.permissions==1)
+        return render_template("blog.html", posts=posts, current_user=current_user) 
+    else:
+        # Now that we know the user is logged in we can create a user object 
+        user = User.query.filter_by(email=current_user.email).first()
+        # Render content for each permissions level  
+        if user.permissions == 1: 
+            posts = Post.query.filter(Post.permissions==1)
+            return render_template("blog.html", posts=posts, current_user=current_user) 
+
+        elif user.permissions == 2:
+            posts = Post.query.filter(or_(Post.permissions==1, Post.permissions==2))
+            return render_template("blog.html", posts=posts, current_user=current_user) 
+
+        elif user.permissions == 3: 
+            posts = Post.query.all()
+            return render_template("blog.html", posts=posts, current_user=current_user)
+        else:
+            return "<h1>Sorry {} Something went wrong and it was probably Tanveers falut<h1>".format(current_user)
 
 @app.route("/about")
 def about():
@@ -131,15 +150,14 @@ def user_exsists(email):
 @login_required
 def new_post():
 
-    # Seach database for current users email 
-    result = User.query.filter_by(email=str(current_user)).first()
+    result = User.query.filter_by(email=current_user.email).first()
 
     # if the admin feild is not true retun 404
     if result.permissions != 3:
         return "<h1> You do not have permissions to view this page</h1>" 
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        post = Post(title=form.title.data, content=form.content.data, author=current_user, permissions=form.permissions.data)
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
