@@ -608,17 +608,23 @@ computer will then use the  output of BLAKE2b to query the correct entry in the
 
 Auth table. 
 
-There are TWO distinct tables that are necessary for authentication
+There are THREE distinct tables that are necessary for authentication
 
 to take place:
+
+User Table:
+
+Contains the user's username, Name, Email Address, and salt_2
 
 
 Auth table:
 
+
 Formatted as the following
 
 
-H_2	=	BLAK2Eb(H_1,salt_2)	||	username	||	Name	||	Email	||	salt_2 
+H_2	=	BLAK2Eb(H_1,salt_2)	||	username	||	salt_3 
+
 
 
 The reason the Auth table is indexed with the verification
@@ -630,9 +636,12 @@ to figure out if its the correct hash of the real user
 or a honey hash (H_3).
 
 
+To calculate H_3 = HMAC-BLAKE2b(H1,H_2	||	salt_3)
+
+
 Honey Table:
 
-H_3
+username | H_3
 
 
 
@@ -664,7 +673,7 @@ is an HMAC.
 So the HMAC goes like this:
 
 
-H_3 = HMAC-BLAKE2b(Key = H_1,H_2  = BLAKE2b verification hash	||	username	||	salt_2)
+H_3 = HMAC-BLAKE2b(Key = H_1,H_2  = BLAKE2b verification hash	||	salt_2)
 
 
 Keep in mind the client-side hash the user sent is NEVER written nor stored anywhere
@@ -697,3 +706,76 @@ This setup is heavily inspired by Ronald L Rivest and Ari Juels' paper "Honeywor
 Making Passwords Crackable". 
 
 (https://dspace.mit.edu/bitstream/handle/1721.1/90627/Rivest_Honeywords.pdf?sequence=1&isAllowed=y)
+
+----------------------------------------------------------------------------
+
+Reset Password
+
+This is up to the system adminstrator.
+
+I am literally giving the current system administrator two options:
+
+1. The registration page gives the user a recovery password. The user 
+
+will have to write down this recovery password and store it in a safe 
+
+place. Maybe store in a password manager.
+
+
+Other than that, it is recommended you write down the recovery
+
+password and store in a safe place that is hard to reach. The 
+
+problem is if someone steals that slip--and this more likely
+
+to happen than we want to believe--you are screwed.
+
+
+The benefit is that this means its the user's problem to reset
+
+their password. The system administrator does not have to do
+
+anything to help the user reset the password. The future
+
+RaiderHacks system administrator better pick this option
+
+if they are not willing to go through the trouble of **manually**
+
+resetting the user's password. The procedure for this is described
+
+below.
+
+
+2. **Manually** resetting the user's password allows the user
+
+to reset their password with the help of the system administrator.
+
+The problem: The system administrator has to verify the student
+
+member's identity either through video call or in person. Ideally
+
+in person.
+
+So here are the series of steps that need to happen if this option
+
+is chosen.
+
+	A. The user goes to an account recovery page.
+
+	The user types in their new password.
+
+	B. The user needs to schedule either a video call or
+
+	in person meeting with a RaiderHacks system administrator.
+
+	The student is REQUIRED to present their RaiderCard proving
+
+	they are the true student.
+
+	C. The system admin will run a Python script that incorporates
+
+	the password the user sent to the server in step A. Once this
+
+	happens the user's account information is reset to the new
+
+	password.	
