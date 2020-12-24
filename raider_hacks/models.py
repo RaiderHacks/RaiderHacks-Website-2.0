@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask_app import db, login_manager
+from raider_hacks import db, login_manager
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -34,25 +34,7 @@ class Post(db.Model):
     def __repr__(self):
         return(self.id + ',' + str(self.permissions))
 
-class Addachievements(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    achievement_id = db.Column(db.Integer, primary_key=True)
-    post_title= db.Column(db.String(120), nullable=False)
-    post_image= db.Column(db.LargeBinary, nullable=False)
-    content = db.Column(db.String(120), nullable=False)
-    user_id= db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
 
-    def __repr__(self):
-        return(self.id)
 
-class Addmembers(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    members_id = db.Column(db.Integer, primary_key=True)
-    post_title = db.Column(db.String(120), nullable=False)
-    post_image = db.Column(db.LargeBinary, nullable=False)
-    content = db.Column(db.String(120), nullable=False)
-    user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
 
-    def __repr__(self):
-        return(self.id)
 
