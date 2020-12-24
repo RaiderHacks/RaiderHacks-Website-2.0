@@ -5,33 +5,53 @@ To submit push requets, your public key
 ## Application Breakdown
 This is the breakdown of a fairly simple Flask Application using a [SQLite](https://www.sqlite.org/index.html) database
 ```
-Flask-on
-│   README.md
-│   FlaskDeployment.md
-│   .gitignore
-│
-└───flask_app
-│   │   __init__.py
-│   │   forms.py
-│   │   models.py
-│   │   routes.py
-│   │   requriments.txt
-│   │   site.db
-│   │
-│   └───static
-│   │   │   ...
-│   │
-│   └───templates
-│   │   │   ...
-must be added to the RaiderHacks git
-
+raider_hacks
+│   ├── __init__.py
+│   ├── auth
+│   │   ├── routes.py
+│   │   └── templates
+│   │       └── auth
+│   │           ├── login.html
+│   │           └── register.html
+│   ├── blog
+│   │   ├── routes.py
+│   │   └── templates
+│   │       └── blog
+│   │           └── blog.html
+│   ├── forms.py
+│   ├── main.py
+│   ├── models.py
+│   ├── posts
+│   │   ├── routes.py
+│   │   └── templates
+│   │       └── posts
+│   │           ├── create_post.html
+│   │           └── post.html
+│   ├── requirements.txt
+│   ├── site.db
+│   ├── static
+│   │   ├── images
+│   │   ├── scripts
+│   │   │   └── messages.js
+│   │   └── styles
+│   │       ├── footer.css
+│   │       ├── global.css
+│   │       ├── login.css
+│   │       ├── members.css
+│   │       ├── navbar.css
+│   │       └── register.css
+│   └── templates
+│       ├── addachievements.html
+│       ├── includes
+│       │   ├── _footer.html
+│       │   ├── _messages.html
+│       │   └── _navbar.html
+│       ├── index.html
+│       ├── layout.html
+│       ├── login.html
+│       └── members.html
 ```
 
-## Flask Frameworks
-These are the [Flask](http://flask.pocoo.org/docs/1.0/) libraries used in this Project. You'll find these in the requirements.txt file.
-- [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)
-- [Flask-Security](https://pythonhosted.org/Flask-Security/)
-- [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/)
 
 ## Deploying Locally
 Lets walk through setting up your development environment and deploying this application on your local machine
@@ -53,11 +73,11 @@ source venv/bin/activate
 ```
 4. Install packages
 ```
-pip install -r flask_app/requirements.txt
+pip install -r requirements.txt
 ```
 5. Create Flask environment variables
 ```
-export FLASK_APP=flask_app/__init__.py
+export FLASK_APP=raider_hacks/__init__.py
 export FLASK_ENV=development
 Windows:
   $env:FLASK_APP = "__init__.py"
@@ -67,4 +87,9 @@ Windows:
 ```
 flask run
 ```
-server.
+
+## useful sqlite3 scripts
+update user permissions 
+```
+ update user set permissions = '3' where id = '1';
+```
