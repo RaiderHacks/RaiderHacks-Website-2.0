@@ -4,8 +4,9 @@
 <link rel="stylesheet" href="static/styles/login.css">
 <div class="container">
   <form action="/login" method="POST">
-    <h1> Login </h1>
-
+    <div class="mx-auto">
+      <h1 class="text-center"> Login </h1>
+    </div>
     <div class="form-group">
       <label for="email">TTU Email</label>
       <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$" class="form-control" id="email" name="email" placeholder="John.Doe@ttu.edu">
@@ -15,14 +16,10 @@
       <label for="password">Password</label>
       <input type="password" class="form-control" id="password" name="password" placeholder="password">
     </div>
-
-    <div class="checkbox mb-3">
       <label>
         <a href="/register">Register</a>
       </label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-
+      <button type="submit" class="btn btn-primary">Login</button>
   </form>
 </div>
 

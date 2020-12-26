@@ -2,7 +2,7 @@
 {% block content %}
 <link rel="stylesheet" href="static/styles/register.css">
 <div class="container">
-  <h1>Sign up</h1>
+  <h1 class="text-center">Register</h1>
   <form action="/register" method="POST">
 
     <div class="form-group">
@@ -31,12 +31,8 @@
       <input type="password" class="form-control" id="password2" name="password2" placeholder="Don't actually use RaiderPower">
     </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <a href="/login">Login</a>
-      </label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+       <a href="/login">Login</a>
+      <button type="submit" class="btn btn-primary">Register</button>
 
   </form>
 </div>
