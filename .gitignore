@@ -7,3 +7,5 @@ env
 .DS_Store
 __pycashe__
 run.sh
+*.db
+

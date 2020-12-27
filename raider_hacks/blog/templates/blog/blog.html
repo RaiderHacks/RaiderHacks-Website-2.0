@@ -16,7 +16,7 @@
     <div class="media-body">
       <b>{{ post.author.first_name}}  {{ post.author.last_name}} </b>
       <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
-       <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
+       <h2><a class="article-title" href="{{ url_for('post.post', post_id=post.id) }}">{{ post.title }}</a></h2>
        <p class="lead">{{ post.content }}</p>
     </div>
  </div>

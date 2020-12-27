@@ -25,4 +25,15 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app) # this inti_app
 
-from flask_app import routes
+from raider_hacks import main 
+
+from raider_hacks.auth.routes import auth_bp
+from raider_hacks.blog.routes import blog_bp 
+from raider_hacks.posts.routes import post_bp
+
+app.register_blueprint(blog_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(post_bp)
+
+
+
