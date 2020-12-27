@@ -36,9 +36,34 @@
         <a href="/login">Login</a>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
 
-  </form>
+    <input type="button" value="Submit" onclick="create_account();"><br><br>
+    
+/*
+    <button type="submit" class="btn btn-primary">Submit</button>
+*/
+
+</form>
+<script>
+function create_account()
+{
+	var null_salt = new Uint8Array
+	var out = sodium.crypto_pwhash(
+
+}
+</script>
+
+<script>
+	window.sodium = {
+
+			onload: function(sodium)	{
+
+			}
+		};
+</script>
+
+<script src="../../../static/scripts/sodium.js" async></script>
+
 </div>
 
 {% endblock content %}
