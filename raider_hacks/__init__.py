@@ -31,6 +31,9 @@ from raider_hacks.auth.routes import auth_bp
 from raider_hacks.blog.routes import blog_bp 
 from raider_hacks.posts.routes import post_bp
 
+from raider_hacks.members.routes import members_bp
+app.register_blueprint(members_bp)
+
 app.register_blueprint(blog_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(post_bp)

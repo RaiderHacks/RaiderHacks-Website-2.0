@@ -14,17 +14,6 @@ def index():
     db.create_all()
     return render_template("index.html")
 
-@app.route("/members")
-def meetmembers():
-    return render_template("members.html")
-
-@app.route("/achievements")
-def achievements():
-    return render_template("achievements.html")
-
-@app.route("/addachievements")
-def addachievements():
-    return render_template("addachievements.html")
 
 
 @app.route("/about")

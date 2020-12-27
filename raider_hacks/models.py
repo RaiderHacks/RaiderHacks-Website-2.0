@@ -34,6 +34,17 @@ class Post(db.Model):
     def __repr__(self):
         return(self.id + ',' + str(self.permissions))
 
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    fname = db.Column(db.String(120), nullable=True)
+    lname = db.Column(db.String(120), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    bio = db.Column(db.Text, nullable=True)
+    profile_pic = db.Column(db.String(120), nullable=True)
+    #    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    def __repr__(self):
+        return "{},{},{},{},{}".format(self.fname, self.lname, self.email, self.bio, self.profile_pic)
+ 
 
 
 

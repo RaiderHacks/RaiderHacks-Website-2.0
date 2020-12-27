@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import request, redirect, url_for, flash
 from flask import Blueprint, render_template
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
@@ -16,7 +16,6 @@ post_bp = Blueprint('post', __name__,
     template_folder='templates',
     static_folder='static'
 )
-
 
 
 @post_bp.route("/post/new", methods=['GET', 'POST'])
@@ -70,3 +69,5 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('index'))
+
+
