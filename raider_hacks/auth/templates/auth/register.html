@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="static/styles/register.css">
 <div class="container">
   <h1 class="text-center">Register</h1>
-  <form action="/register" method="POST">
+  <form action="/register" id="postform" method="POST">
 
     <div class="form-group">
       <label for="fname">First Name</label>
@@ -31,7 +31,6 @@
       <input type="password" class="form-control" id="password2" name="password2" placeholder="Don't actually use RaiderPower">
     </div>
 
-<<<<<<< HEAD
     <div class="checkbox mb-3">
       <label>
         <a href="/login">Login</a>
@@ -46,12 +45,48 @@
 
 </form>
 <script>
+
 function create_account()
 {
-	var null_salt = new Uint8Array
-	var out = sodium.crypto_pwhash(
+	if ( document.getElementById('password1').value != document.getElementById('password2').value )
+	{
+		console.log("Error: Passwords do not match!");
+		return;
+	}
 
+	var null_salt = new Uint8Array(16);
+
+	var i = 0;
+
+	while ( i < 16 )
+	{
+		null_salt[i] = 0;
+
+		i++;
+	}
+	
+	var out = sodium.crypto_pwhash(sodium.crypto_secretbox_KEYBYTES,str( document.getElementById('password2').value + document.getElementById('username') ),null_salt,sodium.crypto_pwhash_MEMLIMIT_MODERATE,sodium.crypto_pwhash_OPSLIMIT_MODERATE,sodium.crypto_pwhash_ALG_DEFAULT);
+
+	var out_base64 = btoa(out);
+
+	console.log("Base64 Encoded H_1: " + out_base64);
+	document.getElementById('password2').value = out_base64;
+	
+	document.getElementById('password1').value = out_base64;
+
+	var xhr = new XMLHttpRequest();
+
+	xhr.open(document.getElementById('postform').ethod,document.getElementById('postform').action,true);
+
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+
+	
+
+	
 }
+
 </script>
 
 <script>
@@ -64,10 +99,8 @@ function create_account()
 </script>
 
 <script src="../../../static/scripts/sodium.js" async></script>
-=======
        <a href="/login">Login</a>
       <button type="submit" class="btn btn-primary">Register</button>
->>>>>>> main
 
 </div>
 
