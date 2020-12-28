@@ -26,10 +26,8 @@ def register():
 
     else:
         # Create user object to insert into SQL
-        passwd1 = request.form.get('password1')
-        passwd2 = request.form.get('password2')
-
-        honeyword = request.form.get('honeyword')
+        passwd1 = request.form.get('password1') # Now a base64-encoded client-side hash
+        passwd2 = request.form.get('password2') # Now a base64-encoded client-side hash
 
         # Checks if passwords match
         if passwd1 != passwd2 or passwd1 == None:
@@ -37,8 +35,6 @@ def register():
             return render_template('auth/register.html')
 
         hashed_pass = nacl.hash.blake2b(passwd2,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
-
-        honeyword_pass = nacl.hash.blake2b(honeyword,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
         
         # Calls the User object from flask_app.models
         new_user = User(
@@ -49,13 +45,6 @@ def register():
             password=hashed_pass,
             permissions=1)
         
-        new_user = User(
-            username=request.form.get('username'),
-            first_name=request.form.get('fname'),
-            last_name=request.form.get('lname'),
-            email=request.form.get('email'),
-            password=honeyword_pass,
-            permissions=1)
 
         # removed new_user.username 
         if user_exists(new_user.email):
