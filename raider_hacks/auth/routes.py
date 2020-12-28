@@ -7,6 +7,10 @@ from flask_login import login_user, logout_user, login_required, current_user
 from raider_hacks import app, db, mail, Message
 from raider_hacks.models import User, Post
 
+import nacl.encoding
+
+import nacl.hash
+
 
 auth_bp = Blueprint('auth', __name__,
     template_folder='templates',
@@ -30,7 +34,8 @@ def register():
             flash('Password Error!', 'danger')
             return render_template('auth/register.html')
 
-        hashed_pass = sha256_crypt.encrypt(str(passwd1))
+#        hashed_pass = sha256_crypt.encrypt(str(passwd1))
+        hashed_pass = nacl.hash.blake2b(passwd2,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
         
         # Calls the User object from flask_app.models
         new_user = User(
@@ -41,12 +46,12 @@ def register():
             password=hashed_pass,
             permissions=1)
         # removed new_user.username 
-        if user_exsists(new_user.email):
+        if user_exists(new_user.email):
             flash('User already exsists!', 'danger')
             return render_template('auth/register.html')
         else:
-            recipiants = ['notjoemartinez@protonmail.com']
-            for email in recipiants:
+            recipients = ['notjoemartinez@protonmail.com']
+            for email in recipients:
                 msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
                 msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
                 mail.send(msg)
@@ -96,7 +101,7 @@ def logout():
 
 
 # Check if username or email are already taken
-def user_exsists(email):
+def user_exists(email):
     # Get all Users in SQL
     users = User.query.all()
     for user in users:
