@@ -29,33 +29,46 @@ def register():
         passwd1 = request.form.get('password1')
         passwd2 = request.form.get('password2')
 
+        honeyword = request.form.get('honeyword')
+
         # Checks if passwords match
         if passwd1 != passwd2 or passwd1 == None:
             flash('Password Error!', 'danger')
             return render_template('auth/register.html')
 
-#        hashed_pass = sha256_crypt.encrypt(str(passwd1))
         hashed_pass = nacl.hash.blake2b(passwd2,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
+
+        honeyword_pass = nacl.hash.blake2b(honeyword,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
         
         # Calls the User object from flask_app.models
         new_user = User(
-            # username=request.form.get('username'),
+            username=request.form.get('username'),
             first_name=request.form.get('fname'),
             last_name=request.form.get('lname'),
             email=request.form.get('email'),
             password=hashed_pass,
             permissions=1)
+        
+        new_user = User(
+            username=request.form.get('username'),
+            first_name=request.form.get('fname'),
+            last_name=request.form.get('lname'),
+            email=request.form.get('email'),
+            password=honeyword_pass,
+            permissions=1)
+
         # removed new_user.username 
         if user_exists(new_user.email):
             flash('User already exsists!', 'danger')
             return render_template('auth/register.html')
+'''
         else:
             recipients = ['notjoemartinez@protonmail.com']
             for email in recipients:
                 msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
                 msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
                 mail.send(msg)
-
+'''
             # Insert new user into SQL
             db.session.add(new_user)
             db.session.commit()

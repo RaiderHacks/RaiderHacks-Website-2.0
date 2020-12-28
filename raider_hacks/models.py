@@ -12,10 +12,11 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(40))
-    last_name = db.Column(db.String(40))
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    username = db.Column(db.String(64))
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    email = db.Column(db.String(128), unique=True, nullable=False)
+    password = db.Column(db.String(512), nullable=False)
     # hmac = db.Column(db.String(128), unique=True, nullable=False)
     permissions = db.Column(db.Integer(), nullable=False, default=1)
     posts = db.relationship('Post', backref='author', lazy=True)
@@ -25,9 +26,9 @@ class User(db.Model, UserMixin):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120), nullable=False)
+    title = db.Column(db.String(128), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    content = db.Column(db.String(120), nullable=False)
+    content = db.Column(db.String(128), nullable=False)
     permissions = db.Column(db.Integer(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 

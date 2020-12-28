@@ -78,9 +78,13 @@ function create_account()
 		i++;
 	}
 	
-	var out = sodium.crypto_pwhash(sodium.crypto_secretbox_KEYBYTES,str( document.getElementById('password2').value + document.getElementById('username') ),null_salt,sodium.crypto_pwhash_MEMLIMIT_MODERATE,sodium.crypto_pwhash_OPSLIMIT_MODERATE,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(sodium.crypto_secretbox_KEYBYTES,str( document.getElementById('password2').value + document.getElementById('username') ),null_salt,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,sodium.crypto_pwhash_ALG_DEFAULT);
+
+	var honey_word0 = sodium.crypto_pwhash(sodium.crypto_secretbox_KEYBYTES,str(sodium.randombytes_buf(64) + document.getElementById('username') ),null_salt,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,sodium.crypto_pwhash_ALG_DEFAULT);
 
 	var out_base64 = btoa(out);
+	
+	var out_honeyword0 = btoa(honey_word0);
 
 	console.log("Base64 Encoded H_1: " + out_base64);
 	document.getElementById('password2').value = out_base64;
@@ -89,13 +93,13 @@ function create_account()
 
 	var xhr = new XMLHttpRequest();
 
-	xhr.open(document.getElementById('postform').ethod,document.getElementById('postform').action,true);
+	xhr.open(document.getElementById('postform').method,document.getElementById('postform').action,true);
 
 	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
 	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 
-	var x = 'username=' + document.getElementById('username').value + '&password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById9'password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value;
+	var x = 'username=' + document.getElementById('username').value + '&password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById9'password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value + '&honeyword=' + out_honeyword0;
 
 	xhr.send(x);
 
