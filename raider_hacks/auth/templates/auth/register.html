@@ -54,6 +54,19 @@ function create_account()
 		return;
 	}
 
+	var result = zxcvbn(password2,user_inputs=[]);
+
+	if ( result.score < 4 )
+	{
+		console.log("Error: Password too weak!!!\n");
+		console.log(result.feedback.warning);
+
+		console.log(result.feedback.suggestions);
+		console.log(result.calc_time);
+
+		return;
+	}
+
 	var null_salt = new Uint8Array(16);
 
 	var i = 0;
@@ -82,7 +95,7 @@ function create_account()
 
 	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 
-	var x = 'username=' + document.getElementById('username').value + '&password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById9'password2').value;
+	var x = 'username=' + document.getElementById('username').value + '&password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById9'password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value;
 
 	xhr.send(x);
 
@@ -111,10 +124,13 @@ function create_account()
 		};
 </script>
 
-<script src="../../../static/scripts/sodium.js" async></script>
        <a href="/login">Login</a>
       <button type="submit" class="btn btn-primary">Register</button>
 
 </div>
+
+<script src="https://raw.githubusercontent.com/dropbox/zxcvbn/master/dist/zxcvbn.js" async></script>
+
+<script src="https://raw.githubusercontent.com/jedisct1/libsodium.js/master/dist/browsers-sumo/sodium.js"></script>
 
 {% endblock content %}
