@@ -18,6 +18,7 @@ def index():
 def meetmembers():
     return render_template("members.html")
 
+
 @app.route("/achievements")
 def achievements():
     return render_template("achievements.html")
