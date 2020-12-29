@@ -11,6 +11,10 @@ import nacl.encoding
 
 import nacl.hash
 
+import nacl.utils
+
+import base64
+
 
 auth_bp = Blueprint('auth', __name__,
     template_folder='templates',
@@ -34,7 +38,12 @@ def register():
             flash('Password Error!', 'danger')
             return render_template('auth/register.html')
 
-        hashed_pass = nacl.hash.blake2b(passwd2,digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
+        server_salt = base64.b64encode(nacl.utils.random(size=32))
+
+        salted_hash = passwd2 + server_salt
+
+        hashed_pass = nacl.hash.blake2b(bytes(salted_hash,'utf-8'),digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
+
         
         # Calls the User object from flask_app.models
         new_user = User(
@@ -43,12 +52,13 @@ def register():
             last_name=request.form.get('lname'),
             email=request.form.get('email'),
             password=hashed_pass,
+            salt=server_salt,
             permissions=1)
         
 
         # removed new_user.username 
         if user_exists(new_user.email):
-            flash('User already exsists!', 'danger')
+            flash('User already exists!', 'danger')
             return render_template('auth/register.html')
 '''
         else:

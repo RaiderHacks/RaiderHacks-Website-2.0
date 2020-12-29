@@ -7,17 +7,17 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # 1 user submitted application
-# 2 user manually acceptaed 
+# 2 user manually accepted 
 # 3 user is an admin 
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64))
+    username = db.Column(db.String(64), unique=True, nullable=False)
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
     email = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(512), nullable=False)
-    # hmac = db.Column(db.String(128), unique=True, nullable=False)
+    salt = db.Column(db.String(128),unique=True,nullable=False)
     permissions = db.Column(db.Integer(), nullable=False, default=1)
     posts = db.relationship('Post', backref='author', lazy=True)
 
