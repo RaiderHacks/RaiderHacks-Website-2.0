@@ -9,3 +9,7 @@ __pycashe__
 run.sh
 *.db
 
+flask_app/static/images/profile_pics/*.jpg
+flask_app/static/images/profile_pics/*.png
+flask_app/static/images/profile_pics/*.JPG
+flask_app/static/images/profile_pics/*.jpeg
