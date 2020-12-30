@@ -37,13 +37,12 @@
       </label>
     </div>
 
-    <input type="button" value="Submit" onclick="create_account();"><br><br>
-    
-/*
-    <button type="submit" class="btn btn-primary">Submit</button>
-*/
+    <input type="button" value="Register" onclick="create_account();"><br><br>
 
 </form>
+
+<script type="text/javascript" src="../../../static/scripts/zxcvbn.js"></script>
+
 <script>
 
 function create_account()
@@ -54,7 +53,7 @@ function create_account()
 		return;
 	}
 
-	var result = zxcvbn(password2,user_inputs=[]);
+	var result = zxcvbn(document.getElementById('password2').value);
 
 	if ( result.score < 4 )
 	{
@@ -123,15 +122,10 @@ function create_account()
 
 			}
 		};
+
 </script>
 
-       <a href="/login">Login</a>
-      <button type="submit" class="btn btn-primary">Register</button>
 
-</div>
-
-<script src="https://raw.githubusercontent.com/dropbox/zxcvbn/master/dist/zxcvbn.js" async></script>
-
-<script src="https://raw.githubusercontent.com/jedisct1/libsodium.js/master/dist/browsers-sumo/sodium.js"></script>
+<script type="text/javascript" src="scripts/sodium.js"></script>
 
 {% endblock content %}
