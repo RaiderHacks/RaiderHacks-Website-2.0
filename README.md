@@ -1,6 +1,16 @@
-# Simple Flask CRUD Web Application
-This is a very simple Flask Application where user can log in and create posts.
-To submit push requets, your public key
+## useful scripts
+update user permissions 
+```
+ update user set permissions = '3' where id = '1';
+```
+run the flask app on a server using gunicorn while sending the output to dev/null and keeping shell
+```bash
+gunicorn -w 3 raider_hacks:app > /dev/null 2>&1 &
+```
+leave the loginshell with the process still running in the background by disowning the process id number
+```bash
+disown [Process id of gunicorn]
+```
 
 ## Application Breakdown
 This is the breakdown of a fairly simple Flask Application using a [SQLite](https://www.sqlite.org/index.html) database
@@ -88,8 +98,3 @@ Windows:
 flask run
 ```
 
-## useful sqlite3 scripts
-update user permissions 
-```
- update user set permissions = '3' where id = '1';
-```

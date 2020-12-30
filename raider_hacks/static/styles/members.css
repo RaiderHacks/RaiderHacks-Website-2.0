@@ -1,0 +1,7 @@
+
+
+.img:hover{
+    box-shadow: 10px 6px 20px 20px #5F4B8BFF;
+    transform:translateX(20px);
+    cursor:pointer;
+}
