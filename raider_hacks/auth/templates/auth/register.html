@@ -122,7 +122,7 @@ function create_account()
 
 	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 
-	var x = 'username=' + document.getElementById('username').value + '&password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById('password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value;
+	var x = 'password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById('password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value;
 
 	xhr.send(x);
 

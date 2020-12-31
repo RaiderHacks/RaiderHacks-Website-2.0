@@ -39,7 +39,7 @@ def register():
             flash('Password Error!', 'danger')
             return render_template('auth/register.html')
 
-        server_salt = base64.b64encode(nacl.utils.random(size=32))
+        server_salt = base64.b64encode(nacl.utils.random(size=64))
 
         salted_hash = passwd2 + server_salt
 
