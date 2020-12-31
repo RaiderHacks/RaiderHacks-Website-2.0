@@ -43,7 +43,7 @@
 
 <script type="text/javascript" src="../../../static/scripts/zxcvbn.js"></script>
 
-<script type="text/javascript" src="../../../static/scripts/sodium.js"></script>
+<script type="text/javascript" src="../../../static/scripts/sodium_formatted.js" async></script>
 
 <script>
 	window.sodium = {
@@ -80,18 +80,31 @@ function create_account()
 		return;
 	}
 
-	var null_salt = new Uint8Array(16);
+	var salt = sodium.randombytes_buf(16);
 
 	var i = 0;
 
 	while ( i < 16 )
 	{
-		null_salt[i] = 0;
+		salt[i] = 0;
 
 		i++;
 	}
+
+	var hash_salt = document.getElementById('password2').value + document.getElementById('email').value;
+
+	console.log(salt);
+
+
+	var t0 = performance.now();
 	
-	var out = sodium.crypto_pwhash(sodium.crypto_secretbox_KEYBYTES,str( document.getElementById('password2').value + document.getElementById('username') ),null_salt,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
+
+	var t1 = performance.now();
+
+	console.log("Time duration:");
+
+	console.log( (t1-t0)/1000 );
 
 	var out_base64 = btoa(out);
 
