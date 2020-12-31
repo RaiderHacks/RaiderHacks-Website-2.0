@@ -454,7 +454,7 @@ security.stackexchange post on it:
 ----------------------------------------------------------------------------
 
 
-Using U2F
+Using FIDO/U2F/FIDO2/WebAuthn
 
 
 Using server relief for password authentication is nice, but there is still
@@ -515,6 +515,8 @@ not only have to steal the user's password. The attacker will also have to
 
 **physically** steal the user's U2F hardware key.
 
+In the future support for FIDO2/WebAuthn will be done.
+
 
 -----------------------------------------------------------------------------------
 
@@ -553,34 +555,6 @@ Algorithms
 https://cups.cs.cmu.edu/rshay/pubs/guessagain2012.pdf
 
 
----------------------------------------------------------------------------------
-
-Detecting Password Cracking Attempts: Honeywords
-
-There is a huge benefit in learning how security protocols are broken.
-
-A person who is well-versed in breaking security protocols should be the actual
-
-person that builds the next up-to-date security protocol defense.
-
-Not only is ZXCVBN useful for measuring the strength of user's passwords before
-
-they are registered onto the online accounts, it will also prove useful
-
-in CATCHING hackers' attempts to break user accounts.
-
-Ronald Rivest, creator of the MD5 message digest algorithm, the 'R' in the famous
-
-"Introduction to Algorithms" textbook, Second Edition, and  the co-creator of
-
-the famous RSA algorithm--has published a paper titled
-
-Fake accounts should be setup so they are **indistinguishable** from real user's
-
-accounts. 
-
-----------------------------------------------------------------------------------
-
 How the Password Authentication will work:
 
 1. User will type in their username and password.
@@ -588,23 +562,20 @@ How the Password Authentication will work:
 
 2. The browser will use sodium.js to hash the password--using the username as a
 
-salt. The real password's hash will be generated in 0.5 seconds. This hash
+salt. The real password's hash will be generated in 1.0 second. This hash
 
 is hereby called H_1.
 
-The fake password will be generated in the other 0.5 seconds. This hash is hereby
-
-called H_0.
 
 
-3. The client-side's hashes are sent to the server. Both the real and fake passwords
+3. The client-side's hashes are sent to the server. The password
 
-are quickly hashed using BLAKE2b. This hash is hereby called H_2. In Libsodium, this 
+is quickly hashed using BLAKE2b. This hash is hereby called H_2. In Libsodium, this 
 
 
-crypto_generic_hash. This is a hash that will be very inexpensive to compute. The 
+is done with crypto_generic_hash(). This is a hash that will be very inexpensive to compute. 
 
-computer will then use the  output of BLAKE2b to query the correct entry in the 
+The computer will then use the  output of BLAKE2b to query the correct entry in the 
 
 Auth table. 
 
@@ -623,89 +594,17 @@ Auth table:
 Formatted as the following
 
 
-H_2	=	BLAK2Eb(H_1,salt_2)	||	username	||	salt_3 
+username || H_2	=	BLAK2Eb(H_1,salt_2)	||	salt_3 
 
+----------------------------------------------------------------------------
 
+Email Magic Link
 
-The reason the Auth table is indexed with the verification
+Some people are too lazy to care for passwords--even with a password
 
-hash (H_2) and NOT the username is that the server needs
+manager. For them, there is an email magic link option. They will be sent
 
-to figure out if its the correct hash of the real user
-
-or a honey hash (H_3).
-
-
-To calculate H_3 = HMAC-BLAKE2b(H1,H_2	||	salt_3)
-
-
-Honey Table:
-
-username | H_3
-
-
-
-The computer will quickly check if the username for that entry is correct. If this 
-
-
-simple check fails, the login is deemed incorrect and the client is denied access.
-
-
-
-4. Once the verification hash from the Auth table  passes there is one last test 
-
-the user's password entry needs to pass. The entire database entry depicted above 
-
-
-is fed to the BLAKE2b-based HMAC function.
-
-
-
-In Libsodium, this function is crypto_generichash except this time it will accept H_1
-
-as the key. Remember, H_1 must NEVER be stored in the Any hash function that accepts a 
-
-symmmetric key and a message to print an ID  number unique to the key-message combination 
-
-is an HMAC.
-
-
-So the HMAC goes like this:
-
-
-H_3 = HMAC-BLAKE2b(Key = H_1,H_2  = BLAKE2b verification hash	||	salt_2)
-
-
-Keep in mind the client-side hash the user sent is NEVER written nor stored anywhere
-
-on the server. So H_1 is the proof of work that forces the attacker to replicate the 
-
-client-side hash--even if the attacker steals both tables: the Auth Table and the Honey Table. 
-
-The verification hash and the HMAC  hash before they finally figure out whether or not their 
-
-cracked password is a fake or real one. Bear in mind the attacker will have to steal the User 
-
-table containg every user's username and email address, the auth table containing every user's 
-
-H_2 hash. 
-
-
-5. The Honey table contains a full list of these H_3 hashes for each and every user.
-
-NOTE: Only the H_3 hash needs to be in the Honey Table no other information tied
-
-to the user need be in the Honey Table.
-
-So if a user's H_2 hash is found in the Auth table AND the user's H_3 hash is found in the 
-
-HMAC table--it is the real user. If only the H_2 hash is found--its an attacker.
-
-This setup is heavily inspired by Ronald L Rivest and Ari Juels' paper "Honeywords:
-
-Making Passwords Crackable". 
-
-(https://dspace.mit.edu/bitstream/handle/1721.1/90627/Rivest_Honeywords.pdf?sequence=1&isAllowed=y)
+an email with a link. To sign in, they will simply click on that link.
 
 ----------------------------------------------------------------------------
 
