@@ -678,3 +678,4 @@ is chosen.
 	happens the user's account information is reset to the new
 
 	password.	
+

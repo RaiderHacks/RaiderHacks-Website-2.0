@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="static/styles/login.css">
 <div class="container">
-  <form action="/login" id="postform" method="POST">
+  <form action="/login" id = "postform" method="POST">
     <div class="mx-auto">
       <h1 class="text-center"> Login </h1>
     </div>
@@ -20,7 +20,6 @@
         <a href="/register">Register</a>
       </label>
     <input type="button" value="Login" onclick="create_account();"><br><br>
-
   </form>
 </div>
 
@@ -43,7 +42,6 @@
 function create_account()
 {
 
-
 	var salt = sodium.randombytes_buf(16);
 
 	var i = 0;
@@ -58,7 +56,6 @@ function create_account()
 	var hash_salt = document.getElementById('password').value + document.getElementById('email').value;
 
 	console.log(salt);
-
 
 	var t0 = performance.now();
 	
@@ -75,7 +72,6 @@ function create_account()
 	console.log("Base64 Encoded H_1: " + out_base64);
 	
 	document.getElementById('password').value = out_base64;
-	
 
 	var xhr = new XMLHttpRequest();
 
@@ -85,7 +81,7 @@ function create_account()
 
 	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 
-	var x = 'password=' + document.getElementById('password').value +  '&email=' + document.getElementById('email').value;
+	var x = 'password=' + document.getElementById('password').value + '&email=' + document.getElementById('email').value;
 
 	xhr.send(x);
 
@@ -104,6 +100,5 @@ function create_account()
 }
 
 </script>
-
 
 {% endblock content %}

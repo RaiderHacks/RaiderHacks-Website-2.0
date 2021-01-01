@@ -93,7 +93,6 @@ def login():
 
         if result is None:
             flash('Incorrect Login!', 'danger')
-            print("LOGIN FAIL")
             return render_template('auth/login.html')
         
         else:
@@ -104,7 +103,6 @@ def login():
             if result.password == hash_verification:
                 login_user(result)
                 flash('Logged in!', 'success')
-                print("LOGIN SUCCESS!!!")
                 return redirect(url_for('index'))
             
             else:
