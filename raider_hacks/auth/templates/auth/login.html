@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="static/styles/login.css">
 <div class="container">
-  <form action="/login" method="POST">
+  <form action="/login" id="postform" method="POST">
     <div class="mx-auto">
       <h1 class="text-center"> Login </h1>
     </div>
@@ -19,8 +19,91 @@
       <label>
         <a href="/register">Register</a>
       </label>
-      <button type="submit" class="btn btn-primary">Login</button>
+    <input type="button" value="Login" onclick="create_account();"><br><br>
+
   </form>
 </div>
+
+<script type="text/javascript" src="../../../static/scripts/sodium_formatted.js" async></script>
+
+<script>
+	window.sodium = {
+
+			onload: function(sodium)	{
+
+			}
+		};
+
+</script>
+
+
+
+<script>
+
+function create_account()
+{
+
+
+	var salt = sodium.randombytes_buf(16);
+
+	var i = 0;
+
+	while ( i < 16 )
+	{
+		salt[i] = 0;
+
+		i++;
+	}
+
+	var hash_salt = document.getElementById('password').value + document.getElementById('email').value;
+
+	console.log(salt);
+
+
+	var t0 = performance.now();
+	
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
+
+	var t1 = performance.now();
+
+	console.log("Time duration:");
+
+	console.log( (t1-t0)/1000 );
+
+	var out_base64 = btoa(out);
+
+	console.log("Base64 Encoded H_1: " + out_base64);
+	
+	document.getElementById('password').value = out_base64;
+	
+
+	var xhr = new XMLHttpRequest();
+
+	xhr.open(document.getElementById('postform').method,document.getElementById('postform').action,true);
+
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+
+	var x = 'password=' + document.getElementById('password').value +  '&email=' + document.getElementById('email').value;
+
+	xhr.send(x);
+
+	xhr.onload = function()
+	{
+		console.log("xhr status");
+
+		console.log(xhr.status);
+
+		user_status = xhr.responseText;
+
+		console.log(user_status);
+
+	}
+	
+}
+
+</script>
+
 
 {% endblock content %}

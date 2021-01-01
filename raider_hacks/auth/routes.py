@@ -39,7 +39,7 @@ def register():
             flash('Password Error!', 'danger')
             return render_template('auth/register.html')
 
-        server_salt = base64.b64encode(nacl.utils.random(size=64))
+        server_salt = str(base64.b64encode(nacl.utils.random(size=64)))
 
         salted_hash = passwd2 + server_salt
 
@@ -85,22 +85,46 @@ def login():
     else:
         # username = request.form.get('username')
         email = request.form.get('email')
+        
         password_candidate = request.form.get('password')
 
         # Query for a user with the provided email 
         result = User.query.filter_by(email=email).first()
 
+        if result is None:
+            flash('Incorrect Login!', 'danger')
+            print("LOGIN FAIL")
+            return render_template('auth/login.html')
+        
+        else:
+            salted_hash =  password_candidate + result.salt
+
+            hash_verification = nacl.hash.blake2b(bytes(salted_hash,'utf-8'),digest_size=64,encoder=nacl.encoding.URLSafeBase64Encoder)
+       
+            if result.password == hash_verification:
+                login_user(result)
+                flash('Logged in!', 'success')
+                print("LOGIN SUCCESS!!!")
+                return redirect(url_for('index'))
+            
+            else:
+                flash('Incorrect Login!', 'danger')
+                print("LOGIN FAIL")
+                return render_template('auth/login.html')
+                
+                 
         # If a user exsists and passwords match - login
-        if result is not None and sha256_crypt.verify(password_candidate, result.password):
+#       if result is not None and sha256_crypt.verify(password_candidate, result.password):
+#        if result is not None and 
 
             # Init session vars
-            login_user(result)
-            flash('Logged in!', 'success')
-            return redirect(url_for('index'))
+#            login_user(result)
+#            flash('Logged in!', 'success')
+#            return redirect(url_for('index'))
 
-        else:
-            flash('Incorrect Login!', 'danger')
-            return render_template('auth/login.html')
+#        else:
+#            flash('Incorrect Login!', 'danger')
+#            return render_template('auth/login.html')
 
 ########## 
 
