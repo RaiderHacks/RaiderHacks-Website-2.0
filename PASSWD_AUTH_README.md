@@ -679,3 +679,86 @@ is chosen.
 
 	password.	
 
+-------------------------------------------------------------------------
+
+
+Securely Changing Password
+
+Naturally, this will function in much the same way as the Registration Page.
+
+The "Change Password" page will require the following fields from the user:
+
+1. Email
+
+2. Current Password
+
+3. New Password
+
+4. Re-type New Password
+
+
+And that's it. The user submits and it either succeeds or fails.
+
+Obviously, if the user types in the incorrect "Current Password",
+
+the request fails. :D
+
+
+Remember, ZXCBVN.js must be used to ensure the "New Password" is
+
+sufficiently secure. The "New Password" must reach a ZXCVBN score
+
+of at least 4 (actually the highest general score possible)
+
+before the HTTP POST request is even sent.
+
+
+If the ZXCVBN test above fails, Javascript will stop execution
+
+and the user is forced to change their "New Password" and 
+
+"Re-type New Password" fields before they have a chance of
+
+their submission being accepted. Once again, the ZXCVBN
+
+test takes place and checks if the strength of the "New
+
+Password" is at least 4. Once this test passes, the HTTP
+
+POST request takes place.
+
+Advice For Implementing "Change Password" Page
+
+
+The best advice is to carefully model the "Change Password"
+
+page off of the RaiderHacks-Website-2.0/raider_hacks/auth/routes.py
+
+file for inspiration on programming the backend of the 
+
+"Change Password" page.
+
+Take a close look at the following function:
+
+```
+def register():
+```
+
+in the routes.py file.
+
+Now, the routes.py takes care of the server implementation.
+
+For inspiration on designing the frontend of the "Change
+
+Password" page, the file that programs what the user will
+
+actually see on their web browser, take inspiration from:
+
+RaiderHacks-Website-2.0/raider_hacks/auth/templates/register.html
+
+That register.html file will be very similiar in design
+
+to the "Change Password" file.
+
+
+
