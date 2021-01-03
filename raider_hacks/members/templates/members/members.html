@@ -1,41 +1,59 @@
 {% extends "layout.html" %}
 
 {% block header %}
-{% endblock %}
+
+{% endblock%}
 
 {% block content %}
-    <div class="jumbotron jumbotron-fluid bg-info text-white text-center">
-    <div class="container">
-    <h1 class="display-3">Members</h1>
-    </div>
-    </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/members.css') }}">
+<main role="main">
 
-    <div class=".container-fluid">
-    <div class="row justify-content-center">
-    {% for member in members %}
-        <div class=".col-12 .col-md-6 p-5 m-5">
-            <h3 class="text-primary texty"> {{ member.fname }} {{ member.lname }} </h3>
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">My Cats</h1>
+        <p class="lead text-muted">A major problem with testing out UI components regarding images is that I never have enough images of equal size and quality. Not today though, I mannaged to find a AI traing set of cat images.</p>
+      </div>
+    </section>
 
-            
-             <div class="img">
-              <img src="static/images/profile_pics/{{ member.profile_pic }}" class="img-fluid" alt="Responsive image">
+    <div class="album py-5 bg-light">
+      <div class="container">
+
+        <div class="row">
+          {% for member in members %}
+          <div class="col-md-4">
+            <a href="{{ url_for('members.member', member_id=member.id) }}">
+
+            <div class="card mb-4 box-shadow">
+              <div>
+              <img class="card-img" src="static/images/profile_pics/{{ member.profile_pic }}" alt="Card image cap">
+              <div class="card-img-overlay"> 
+                <h5 class="card-title" id="cn"> {{ member.fname }} {{ member.lname }} </h5>
+
+              </div>
             </div>
+            
+            </a>  
+            
+            </div>
+          </div>
 
+          {% endfor %}
 
-            <ul class="nav .text-center">
-                <li class="nav-item mx-auto">
-                <a class="nav-link .text-center" href="{{ url_for('members.member', member_id=member.id) }}"> read more about {{ member.fname }}</a></h2>
-
-                </li>
-            </ul>
-
+      
+      
         </div>
-       
+      </div>
+    </div>
+    
+ 
 
-    {% endfor %}
+
+  </main>
 
 
 
 
+   
+ 
 
 {% endblock %} 

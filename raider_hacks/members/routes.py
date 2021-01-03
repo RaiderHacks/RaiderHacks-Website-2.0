@@ -28,7 +28,7 @@ def save_image(form_image):
         image_fn = random_hex + f_ext
         image_path = os.path.join(app.root_path, 'static/images/profile_pics', image_fn)
 
-        output_size = (500,500)
+        output_size = (300,300)
         i = Image.open(form_image)
         i.thumbnail(output_size)
         i.save(image_path)
