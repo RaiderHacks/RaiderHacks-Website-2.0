@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import Flask,render_template, request, redirect, url_for, flash
 from flask import Blueprint, render_template
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
@@ -37,7 +37,7 @@ def register():
         # Checks if passwords match
         if passwd1 != passwd2 or passwd1 == None:
             flash('Password Error!', 'danger')
-            return render_template('auth/register.html')
+            return render_template('auth/register.html'),400
 
         server_salt = str(base64.b64encode(nacl.utils.random(size=64)))
 
@@ -60,7 +60,8 @@ def register():
         # removed new_user.username 
         if user_exists(new_user.email):
             flash('User already exists!', 'danger')
-            return render_template('auth/register.html')
+            return render_template('auth/register.html'),400
+
         else:
 #            recipients = ['notjoemartinez@protonmail.com']
 #            for email in recipients:
@@ -74,7 +75,7 @@ def register():
             login_user(new_user)
 
             flash('Account created!', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('index')),200
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -93,7 +94,7 @@ def login():
 
         if result is None:
             flash('Incorrect Login!', 'danger')
-            return render_template('auth/login.html')
+            return render_template('auth/login.html'),401
         
         else:
             salted_hash =  password_candidate + result.salt
@@ -103,12 +104,11 @@ def login():
             if result.password == hash_verification:
                 login_user(result)
                 flash('Logged in!', 'success')
-                return redirect(url_for('index'))
+                return redirect(url_for('index')),200
             
             else:
                 flash('Incorrect Login!', 'danger')
-                print("LOGIN FAIL")
-                return render_template('auth/login.html')
+                return render_template('auth/login.html'),401
                 
                  
         # If a user exsists and passwords match - login

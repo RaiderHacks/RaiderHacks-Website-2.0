@@ -704,7 +704,7 @@ Obviously, if the user types in the incorrect "Current Password",
 the request fails. :D
 
 
-Remember, ZXCBVN.js must be used to ensure the "New Password" is
+Remember, ZXCVBN.js must be used to ensure the "New Password" is
 
 sufficiently secure. The "New Password" must reach a ZXCVBN score
 
@@ -760,5 +760,413 @@ That register.html file will be very similiar in design
 
 to the "Change Password" file.
 
+
+------------------------------------------------------------------
+
+Defense Against UnTargeted Spam
+
+AKA
+
+Forcing The Client To Actually Retrieve The HTML File 
+
+of the Registration Page
+
+
+One of the most dangerous places on a website is the registration
+
+page. 
+
+
+At this time there is no way to force a client to actually
+
+visit the Registration page when they are trying to create an
+
+account.
+
+If you take a close look at the parameters of the registration
+
+page, the HTTP POST request parameters are definitely
+
+NOT complicated:
+
+1. First Name
+
+2. Last Name
+
+3. Email Address
+
+4. Password
+
+5. Re-Type Password
+
+
+On every Internet Protocol everywhere--including HTTPS---there
+
+are spam bots that randomly index the web looking for registration
+
+pages to spam.
+
+
+This is called "Spam User Registration".
+
+A StackOverflow User:
+
+(https://webmasters.stackexchange.com/questions/61291/why-do-registration-bots-exist-what-do-they-gain-from-registering-on-my-site)
+
+The StackOverflow User pointed out the following reasons why User Spambots Are A Problem:
+
+1. When they register, your site probably sends an email to a bad address or an address that belongs to someone that didn't register on your site. That makes you look like a possible spammer.
+
+2. They could use the accounts to degrade performance on your site (this is one of the most concerning because if they triggered this using automated techniques it'd be very difficult to stop without inconveniencing your real users)
+
+3. They could use the fake accounts to skew your performance metrics in areas like abandoned carts by customers, etc.
+
+4. They could abuse features like refer a friend and sending wishlists to other email addresses that will then mark your emails as spam (If you have those available).
+
+5. When you go to send a newsletter at a later date, your list may be filled with bad addresses.
+
+6. These are bots trying to send you spam, or worse, trying to exploit your contact form to send spam to others.
+
+So the spam bots can spam the database table with fake accounts.
+
+And there is truly nothing stopping them from doing this
+
+every 65 seconds as we speak.
+
+At the time of this writing.
+
+
+This is the exact kind of thing developers fear from SQL Injections.
+
+Worse, a user can escape doing all the safety features the user
+
+is supposed to protect their own accounts, or even more important,
+
+defending the server from being overflowed with Spam Data. Or worse,
+
+a DOS attack.
+
+To stop bots from wreaking havoc on the registration system,
+
+we need to FORCE the client to perform an amount of computational
+
+work that delays the user's authentication long enough to stop
+
+a spam attack from being effective yet fast enough four user
+
+experience.
+
+
+Finding the right time duration that combines the best of both
+
+is a tough challenge that has challenged security developers
+
+since web authentication became a serious problem.
+
+
+Developers have devised a concept called Computer Automated
+
+Public Turing Test To Tell Computers and Humans Apart (CAPTCHA) 
+
+to ~~stop~~ slow down the speed at which bots that target
+
+online webs services spam user's websites.
+
+
+Today, Google's reCAPTCHA is the most famous implementation.
+
+But reCAPTCHA has its own problems. Above all else, its not
+
+free and open source. So no one outside of Google's Development
+
+Team can confidently say they know how the code actually works.
+
+They cannot say what the code is actually doing behind the scenes.
+
+Keep in mind that in order for reCAPTCHA to work properly you need,
+
+Google recommended you should embed it onto as many web pages on
+
+your website as possible.
+
+Go back and read that sentence again.
+
+(https://www.fastcompany.com/90369697/googles-new-recaptcha-has-a-dark-side)
+
+Anyways, a free and open source CAPTCHA alternative thankfully exists
+
+called Friendly CAPTCHA:
+
+https://friendlycaptcha.com/
+
+That actually gives away the source code free of charge, even though
+
+it has a commercial business model.
+
+The Friendly CAPTCHA site sums up the problem with reCAPTCHA:
+
+1. Accessibility
+
+Normal CAPTCHA tasks are not easy for all humans. Those with poor eyesight, hearing or even using a screenreader may struggle to perform the tasks and are delayed or even denied access.
+
+2. Usability and conversion
+
+Nobody wants to label cars when all they wanted to do is post a comment. Every second spent labeling images is an opportunity for a visitor to give up on your website.
+ 
+3. Privacy
+
+The most popular CAPTCHA system, Google ReCAPTCHA depends on tracking users and collecting user data across the internet.
+
+This is a price that you are forcing your users to pay in order to use your website. They can not opt out.
+
+4. Bandwidth
+
+Solving a full ReCAPTCHA challenge takes up to 2MB of bandwidth, which is a lot for users on a limited data plan.
+
+5. It's broken (The absolute worst problem with it)
+
+Tasks that are easy for all humans but difficult for computers may no longer exist.
+
+Using machine learning or even browser plugins one can solve ReCAPTCHA in under a second. There are even CAPTCHA solving companies that offer thousands of solves for $1.
+
+Normal CAPTCHAs are no longer effective at distinguishing users from bots.
+
+6. VPN users get punished (So do TOR users, horribly)
+
+ReCAPTCHA can not be reached consistently from certain countries such as China without a VPN. VPN users have to complete a never-ending amount of labeling tasks because they are harder to track for Google's anti-bot protection. 
+
+In response to all of these problems, the inventor of Friendly
+
+CAPTCHA decided to invent a CAPTCHA that used a Proof-of-Work algorithm
+
+to filter out untargeted spam bots. The problem with machine learning
+
+algorithms is that they required the programmers (or CAPTCHA AI) to acquire 
+
+as much real data on user activity to improve.
+
+But the Proof-Of-Work activity does not require this.
+
+Instead, here is what Friendly CAPTCHA does:
+
+1. First, randomly generate a 32-byte string using a cryptographically
+
+secure random generator. On Linux systems, this would be using
+
+/dev/urandom. This requires at least 256 bits of entropy to do
+
+properly. To check how much entropy is available in the system:
+
+```
+$ cat /proc/sys/kernel/random/entropy_avail
+```
+
+It should be **far** greater than 256. It should be somewhere
+
+above 3000. 
+
+This 32-byte string will serve as the base of the puzzle we
+
+are assembling for the user. It will make it practically
+
+impossible for any computer--no matter how powerful to brute-force
+
+guess the entire puzzle ahead of time.
+
+The best chance a client has of passing the test is that they
+
+actually have to make a GET request of the registration page:
+
+"GET /register HTTP/1.1" 200 -
+
+
+This is truly the fastest way of the user acquiring the final
+
+puzzle that will be based on the 32-byte buffer in the first place :).
+
+This 32-byte buffer actually serves as the nonce and secret key
+
+used to generate an HMAC digital signature. An HMAC digital signature
+
+works like this:
+
+HMAC(secret_key,input_message) = Giant Number That Is Impractical
+
+
+To Guess Nor Duplicate Using A Different input_message
+
+So as you can see from the simple formula above, an HMAC uses a
+
+symmetric key to derive a non-reversible, non-forgeable
+
+hash of an input-message.
+
+
+The original Friendly CAPTCHA specifications state that the
+
+output hash will be 256-bits when using HMAC-SHA256.
+
+But the author of Friendly-PoW decided to use HMAC-SHA256-128,
+
+which only uses the first 128 bits of that 256-bit hash.
+
+
+Here are three examples to make it very obvious what that means:
+
+Test Case #1: HMAC-SHA-256 with 3-byte input and 32-byte key
+   Key_len         : 32
+   Key             : 0x0102030405060708090a0b0c0d0e0f10
+                       1112131415161718191a1b1c1d1e1f20
+   Data_len        : 3
+   Data            : "abc"
+   HMAC-SHA-256    : 0xa21b1f5d4cf4f73a4dd939750f7a066a
+                       7f98cc131cb16a6692759021cfab8181
+   HMAC-SHA-256-128: 0xa21b1f5d4cf4f73a4dd939750f7a066a
+
+   Test Case #2: HMAC-SHA-256 with 56-byte input and 32-byte key
+   Key_len         : 32
+   Key             : 0x0102030405060708090a0b0c0d0e0f10
+                       1112131415161718191a1b1c1d1e1f20
+   Data_len        : 56
+   Data            : "abcdbcdecdefdefgefghfghighijhijk
+                      ijkljklmklmnlmnomnopnopq"
+   HMAC-SHA-256    : 0x104fdc1257328f08184ba73131c53cae
+                       e698e36119421149ea8c712456697d30
+   HMAC-SHA-256-128: 0x104fdc1257328f08184ba73131c53cae
+
+Test Case #3: HMAC-SHA-256 with 112-byte (multi-block) input
+                 and 32-byte key
+   Key_len         : 32
+   Key             : 0x0102030405060708090a0b0c0d0e0f10
+                       1112131415161718191a1b1c1d1e1f20
+   Data_len        : 112
+   Data            : "abcdbcdecdefdefgefghfghighijhijk
+                      ijkljklmklmnlmnomnopnopqabcdbcde
+                      cdefdefgefghfghighijhijkijkljklm
+                      klmnlmnomnopnopq"
+   HMAC-SHA-256    : 0x470305fc7e40fe34d3eeb3e773d95aab
+                       73acf0fd060447a5eb4595bf33a9d1a3
+   HMAC-SHA-256-128: 0x470305fc7e40fe34d3eeb3e773d95aab
+
+Now, HMAC-SHA256-128 only works on 512-bit blocks.
+
+(https://tools.ietf.org/html/draft-ietf-ipsec-ciph-sha-256-01#section-3.2)
+
+The raw puzzle buffer contains the following information:
+
+The input to solve consists of bytes (and their corresponding trailing offsets AKA cumulative sum of bytes)
+ * 4 (Puzzle Timestamp)    | 4
+ * 4 (Account ID)          | 8
+ * 4 (App ID)              | 12
+ * 1 (Puzzle version)      | 13
+ * 1 (Puzzle expiry)       | 14
+ * 1 (Number of solutions) | 15
+ * 1 (Puzzle difficulty)   | 16
+ * 8 (Reserved, 0 for now) | 24
+ * 8 (Puzzle Nonce)        | 32
+ * 32 (Optional user data) | 64
+
+Or as characters (without user data):
+tttt aaaa bbbb v e n d 00000000 pppppppp
+
+(https://github.com/FriendlyCaptcha/friendly-pow)
+
+The raw puzzle buffer ( input_message ) will be up to 64 bytes long.
+
+
+We know 64 bytes is exactly 512-bits.
+
+
+The problem: You need to send those 64-bytes over the Internet.
+
+Anyone who has ever dealt with sending binary data over the Internet
+
+will tell you should **ALWAYS** encode binary data in Base64
+
+Encoded form.
+
+
+So the HMAC-SHA256-128 is applied to the Base64 Encoding algorithm.
+
+Base64( HMAC-SHA256-128( secret_key, input_message) )
+
+
+The formula for converting the length, in bytes **n**, of a binary input
+
+to Base64 byte-length is: 4 * ceil( **n** / 3 )
+
+So for 64 bytes that's:
+
+4 * ceil ( 64 / 3 ) = 88 bytes
+
+Now, the next multiple of 512-bits (64 bytes) after 64 is:
+
+64 bytes * 2 = 128 bytes
+
+That's why the Friendly PoW pads the Base64 output with zero bytes
+
+until it reaches a size of 128 bytes exactly. :)
+
+(https://github.com/FriendlyCaptcha/friendly-pow)
+
+
+Now the user receives this Base64-Encoded message.
+
+This is the Proof-Of-Work algorithm:
+
+1. The client must change the last 8 bytes of the 128-byte message
+
+until the following challenge is met:
+
+2. The first 4 bytes of the BLAKE2b hash of the final hash the client 
+
+randomly generated
+
+
+
+------------------------------------------------------------------
+
+WebAuthn Protocol
+
+RaiderHacks will support the WebAuthn protocol to educate students
+
+on how to defend against Phishing attacks while using online web
+
+services. 
+
+
+The WebAuth protocol combines the U2F and UAF protocols and uses
+
+public-private key cryptography-based digital signatures to give
+
+both client and server reliable assurance of each others' identity
+
+as a means of authentication. 
+
+
+The official authenticator device that the RaiderHacks Team should
+
+use should be a device from the Yubikey 5 Series:
+
+https://www.yubico.com/products/yubikey-5-overview/
+
+
+The reason Yubico's 5 Series were chosen as the official authenticator
+
+device supported on the website is because their online documentation
+
+is the absolute best of the best.
+
+WebAuthn has server libraries that allow developers to support U2F
+
+authentication on their website.
+
+Our website's backend was built in Python.
+
+Luckily for us, Yubico has a Python server library:
+
+https://developers.yubico.com/WebAuthn/Libraries/List_of_libraries.html
+
+https://developers.yubico.com/python-fido2/
 
 
