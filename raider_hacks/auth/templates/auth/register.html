@@ -67,6 +67,13 @@ function create_account()
 		return;
 	}
 
+	if ( document.getElementById('password2').value == "" )
+	{
+		console.log("Error: No password entered!\n");
+
+		return;
+	}
+
 	var result = zxcvbn(document.getElementById('password2').value);
 
 	if ( result.score < 4 )

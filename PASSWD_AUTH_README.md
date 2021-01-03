@@ -465,6 +465,8 @@ Server Relief:
 
 (https://openwall.info/wiki/people/solar/algorithms/challenge-response-authentication)
 
+(https://wizardforcel.gitbooks.io/practical-cryptography-for-developers-book/content/mac-and-key-derivation/argon2.html)
+
 ----------------------------------------------------------------------------
 
 
