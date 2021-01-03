@@ -451,6 +451,20 @@ security.stackexchange post on it:
 
 (https://security.stackexchange.com/questions/51625/time-memory-trade-off-attacks)
 
+---------------------------------------------------------------------------
+
+Further Research on Server Relief
+
+This amazing post on Security StackExchange gives two links on
+
+Server Relief:
+
+(https://security.stackexchange.com/questions/224629/password-hashing-that-is-resistant-to-asic-assisted-cracking-without-risking-dos)
+
+(https://tools.ietf.org/html/rfc5802)
+
+(https://openwall.info/wiki/people/solar/algorithms/challenge-response-authentication)
+
 ----------------------------------------------------------------------------
 
 
@@ -681,16 +695,17 @@ is chosen.
 
 -------------------------------------------------------------------------
 
-
 Securely Changing Password
 
 Naturally, this will function in much the same way as the Registration Page.
 
 The "Change Password" page will require the following fields from the user:
 
-1. Email
+1. Current Email Address
 
 2. Current Password
+
+2. New Email (Outlook Allows You to Change This; If Same Email ... Leave Blank)
 
 3. New Password
 
@@ -701,7 +716,17 @@ And that's it. The user submits and it either succeeds or fails.
 
 Obviously, if the user types in the incorrect "Current Password",
 
-the request fails. :D
+or "Current Email Address" the request fails. :D
+
+What may surprise you is that there is an option to actually
+
+change one's Email Address. Outlook actually allows email addresses
+
+to be changed, so it is important this feature is supported.
+
+NOTE: The random 32-byte salt stored on the server should
+
+also be replaced by a new 32-byte salt stored on the server.
 
 
 Remember, ZXCVBN.js must be used to ensure the "New Password" is
@@ -997,7 +1022,7 @@ To Guess Nor Duplicate Using A Different input_message
 
 So as you can see from the simple formula above, an HMAC uses a
 
-symmetric key to derive a non-reversible, non-forgeable
+symmetric key to derive a non-reversible, non-precomputable
 
 hash of an input-message.
 
@@ -1012,6 +1037,7 @@ which only uses the first 128 bits of that 256-bit hash.
 
 
 Here are three examples to make it very obvious what that means:
+
 
 Test Case #1: HMAC-SHA-256 with 3-byte input and 32-byte key
    Key_len         : 32
@@ -1088,7 +1114,51 @@ Encoded form.
 
 So the HMAC-SHA256-128 is applied to the Base64 Encoding algorithm.
 
+Base64( HMAC-SHA256-128( secret_key, Padded_Base64(input_message) )
+
+
+And, of course, the actual raw puzzle buffer has to be applied to the
+
+Base64 Encoding algorithm:
+
+Padded_Base64 = Base64( input_message ) + zero bytes necessary to make 128 bytes buffer
+
+The user will manipulate the Base64( input_message ) to complete the
+
+challenge. 
+
+**But** the user is supposed to leave the:
+
 Base64( HMAC-SHA256-128( secret_key, input_message) )
+
+untouched. 
+
+
+After the client's computer completes the puzzle,
+
+it the client must send back the hash ***and*** the
+
+HMAC exactly as it first received it--untouched.
+
+This is reliable assurance the client actually made a complete
+
+GET HTTP request from the actual registration page.
+
+
+Now, there is a time limit as to how much time the user has
+
+to complete challenge. Of course, this is to prevent the user
+
+from spamming the user account database. It is also to give
+
+the server enough time to delete spam if any spam attempts
+
+succeed.
+
+
+At the bare minimum, the Friendly CAPTCHA challenge needs
+
+to take at least 3 seconds for this to work.
 
 
 The formula for converting the length, in bytes **n**, of a binary input
@@ -1118,9 +1188,68 @@ This is the Proof-Of-Work algorithm:
 
 until the following challenge is met:
 
-2. The first 4 bytes of the BLAKE2b hash of the final hash the client 
+2. The first 4 bytes of the BLAKE2b hash of the final 128-byte message
 
-randomly generated
+the client helped complete is less than the following number:
+
+```
+T = floor(2^((255.999-d)/8)))
+```
+
+I have not even yet talked about what that 'd' variable actually
+
+means. It is actually a part of the original puzzle buffer message:
+
+The raw puzzle buffer contains the following information:
+
+The input to solve consists of bytes (and their corresponding trailing offsets AKA cumulative sum of bytes)
+ * 4 (Puzzle Timestamp)    | 4
+ * 4 (Account ID)          | 8
+ * 4 (App ID)              | 12
+ * 1 (Puzzle version)      | 13
+ * 1 (Puzzle expiry)       | 14
+ * 1 (Number of solutions) | 15
+ * 1 (Puzzle difficulty)   | 16 (This is the 'd' variable)
+ * 8 (Reserved, 0 for now) | 24
+ * 8 (Puzzle Nonce)        | 32
+ * 32 (Optional user data) | 64
+
+Or as characters (without user data):
+tttt aaaa bbbb v e n d 00000000 pppppppp
+
+(https://github.com/FriendlyCaptcha/friendly-pow)
+
+So the first 4 bytes of the BLAKE2b hash need to be less than
+
+the T value = floor(2^((255.999-d)/8)))
+
+Only then will the 128-byte buffer the client sends back as
+
+a POST request--along with the HMAC-SHA256-128--be acceptable.
+
+Otherwise, the user's IP address gets blacklisted by the server's
+
+firewall for at least a minute ;).
+
+Seriously, there is truly no excuse for failing this challenge
+
+other than being too impatient.
+
+
+Now, Friendly CAPTCHA's technique is great...but I see one flaw
+
+in it.
+
+The BLAKE2b algorithm is suspectible to specialized-hardware
+
+attacks, including  but not limited to:
+
+1. ASIC (Application-Specific Integrated Circuit Hardware)
+
+2. FPGA
+
+3. GPU
+
 
 
 
