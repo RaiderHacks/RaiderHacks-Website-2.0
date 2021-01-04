@@ -4,7 +4,7 @@ regardless of the device used.
 
 The following exceeds 100 milliseconds:
 
-time echo "password" | argon2 spartacus -d -t 1 -k 126976 -p 8 -l 64 -e
+time echo "password" | argon2 spartacus -d -t 2 -k 126976 -p 8 -l 64 -e
 
 Cryptocurrency mining, that takes 0.1 seconds on a 2 Ghz CPU using 1 core --- Argon2d with 2
 
