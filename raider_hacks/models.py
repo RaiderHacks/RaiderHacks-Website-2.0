@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     # hmac = db.Column(db.String(128), unique=True, nullable=False)
     permissions = db.Column(db.Integer(), nullable=False, default=1)
     posts = db.relationship('Post', backref='author', lazy=True)

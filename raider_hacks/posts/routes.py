@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, Markup
 import markdown
-
+import markdown.extensions.fenced_code
+from pygments.formatters import HtmlFormatter
+import logging
 from flask import request, redirect, url_for, flash
 from flask import Blueprint, render_template
 from passlib.hash import sha256_crypt
@@ -32,8 +34,7 @@ def new_post():
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user, permissions=form.permissions.data)
         # convert to markdown before sending
-        html = markdown.markdown(post)
-        db.session.add(html)
+        db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('index'))
@@ -42,7 +43,18 @@ def new_post():
 @post_bp.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('posts/post.html', title=post.title, post=post)
+
+    # convert to markdown
+    md_template = markdown.markdown(post.content, extensions=["fenced_code", "codehilite"])
+
+    # format code blocks with css  
+    formatter = HtmlFormatter(style="tango",full=True,cssclass="codehilite")
+    css_string = formatter.get_style_defs()
+    md_css_string = "<style>" + css_string + "</style>"
+    # conacatinate css and html markdown
+    html_md = md_css_string + md_template 
+
+    return render_template('posts/post.html', title=post.title, post=post, html_md=Markup(html_md))
 
 @post_bp.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required

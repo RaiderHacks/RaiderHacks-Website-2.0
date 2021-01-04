@@ -66,14 +66,14 @@ def login():
     if request.method == 'GET':
         return render_template('auth/login.html')
 
-    else:
+    elif request.method == 'POST':
         # username = request.form.get('username')
         email = request.form.get('email')
         password_candidate = request.form.get('password')
-
+        print(email)
         # Query for a user with the provided email 
         result = User.query.filter_by(email=email).first()
-
+        print(password_candidate, result, type(result))
         # If a user exsists and passwords match - login
         if result is not None and sha256_crypt.verify(password_candidate, result.password):
 

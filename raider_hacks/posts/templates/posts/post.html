@@ -13,9 +13,9 @@
         {% endif %}
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
-      {% filter markdown %}
-        {{ post.content }}
-      {% endfilter %}
+
+        {{ html_md }}
+
 
     </div>
   </article>

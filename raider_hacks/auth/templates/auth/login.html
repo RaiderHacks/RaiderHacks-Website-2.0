@@ -5,15 +5,16 @@
 <body class="text-center">
     
   <main class="form-signin">
-    <form action="login" method="POST">
+    <form action="/login" method="POST">
       <img class="mb-4" src="../static/images/logo.png" alt="" width="50" height="50">
       <h1 class="h3 mb-3 fw-normal">Login</h1>
 
-      <label for="inputEmail" class="visually-hidden">TTU Email</label>
-      <input type="email" id="inputEmail" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$" class="form-control" name="email "placeholder="TTU Email" required autofocus>
+      <label for="email" class="visually-hidden">TTU Email</label>
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="form-control" id="email" name="email" placeholder="Email">
 
-      <label for="inputPassword" class="visually-hidden">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+      <label for="password" class="visually-hidden">Password</label>
+      
+      <input type="password" id="password" class="form-control" placeholder="Password" name="password" required>
 
       <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
       <p> Not a member? <a href="/register">Sign up!</a></p>
