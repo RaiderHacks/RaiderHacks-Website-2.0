@@ -1,3 +1,9 @@
+Required Reading:
+
+Practical Cryptography For Developers 
+
+(https://wizardforcel.gitbooks.io/practical-cryptography-for-developers-book/content/mac-and-key-derivation/argon2.html)
+
 Server Relief Password Authentication
 
 
@@ -451,6 +457,337 @@ security.stackexchange post on it:
 
 (https://security.stackexchange.com/questions/51625/time-memory-trade-off-attacks)
 
+The line work "Practical Cryptography for Developers"
+
+provides a very nice table explaining the weaknesses of several password hashing
+
+schemes used in the past:
+
+Approach				Security		Comments
+
+Clear-text passwords			Extremely low		Never do this: compromised server will render all passwords leaked
+
+Simple password hash			Low			Vulnerable to dictionary attacks
+
+Salted hashed passwords			Average			Vulnerable to GPU-based and ASIC-based password cracking
+
+Secure KDF function (like Argon2)	High			Recommended, use strong KDF parameters
+
+
+Aim for the Secure KDF function (like Argon2). It is free and open source :).
+
+
+Seriously, Practical Cryptography for Develpers should be required reading
+
+for the next generation of people that are responsible for managing
+
+the security of the RaiderHacks website.
+
+What is all this fuss about ASIC and FPGA resistance.
+
+And what are the chances that a university student will be able to get
+
+their hands on a very powerful computer?
+
+
+I am sorry to tell you that--yes--you will be bewildered by how
+
+ridiculously easy it is for any university student to get their
+
+hands on a very powerful computer.
+
+--------------------------------------------------------------------------
+
+The HPCC Quanah and Raider Cluster Computers
+
+Texas Tech gives free access to supercomputers to ALL university students.
+
+How powerful you ask?
+
+**                                                                           **
+**     More information      www.hpcc.ttu.edu/operations/maintenance.php     **
+**     -----------------------------------------------------------------     **
+**                                                                           **
+**                      Upcoming HPCC Training Sessions                      **
+**     -----------------------------------------------------------------     **
+**     XSEDE Big Data and Machine Learning            Dec 1-2   10am-4pm     **
+top - 17:09:08 up 6 days, 21:29, 20 users,  load average: 3.54, 3.58, 4.49
+top - 17:09:32 up 6 days, 21:29, 20 users,  load average: 3.46, 3.56, 4.46
+
+Tasks: 1036 total,   4 running, 1030 sleeping,   2 stopped,   0 zombie
+
+%Cpu(s):  4.8 us,  1.0 sy,  0.0 ni, 94.2 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+
+KiB Mem : 19797659+total, 92345392 free,  5700736 used, 99930456 buff/cache
+
+KiB Swap: 48313340 total, 48313340 free,        0 used. 15820753+avail Mem 
+
+
+The total amount of RAM that Quanah HPCC computer has free is 92345392 KiB of memory
+
+So that's 92345392 / 1024 * 1024  is approximately 88 MiB of RAM.
+
+Okay, so that's not impressive at all I have to admit. 
+
+But take a look at how many cores it supports:
+
+quanah:$ lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                72
+On-line CPU(s) list:   0-71
+Thread(s) per core:    2
+Core(s) per socket:    18
+Socket(s):             2
+NUMA node(s):          2
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 79
+Model name:            Intel(R) Xeon(R) CPU E5-2695 v4 @ 2.10GHz
+Stepping:              1
+CPU MHz:               2860.347
+CPU max MHz:           3300.0000
+CPU min MHz:           1200.0000
+BogoMIPS:              4190.47
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              256K
+L3 cache:              46080K
+
+So there are 72 CPUs, each with 2 thread(s) per core, and 18 core(s) 
+
+per socket.
+
+What does all of that mean?
+
+The 72 CPU(s) means there are a total of 72 logical CPUs.
+
+# of logical CPU(s) := Thread(s) per core x Core(s) per socket x Socket(s)
+
+This information, the number of logical CPU(s) and RAM the server has will
+
+be necessary in setting the hash cracking challenges that will be featured
+
+in the CAPTCHA tool.
+
+And that is because we need to give the server enough time to delete
+
+spam accounts.
+
+
+At the time of this writing, Texas Tech is transforming the original HPCC
+
+cluster whose specs are shown here to the more robust and powerful
+
+RedRaiderCluster, making the lives of hash crackers easier.
+
+--------------------------------------------------------------------------
+
+Email Authentication
+
+I am sure that when making a new account on an online web service, the
+
+web service sends you an email.
+
+You thus have to login to your email account and click on a "Magic Link".
+
+
+This magic link contains a 256-bit randomized string (in URL-Safe Base64
+
+Encoded Form) and an HMAC of that 256-bit randomized string (also in
+
+URL-Safe Base64 Encoded form)
+
+
+The server stores both in a database table and there is a deadline after 
+
+which the server will refuse to validate the user's account registration.
+
+
+This is exactly what the RaiderHacks should do to ultimately defeat
+
+Targeted Spam Defense. Spam Bots will NOT get away with using fake
+
+email addresses using this technique. They can give a pre-existing person's
+
+real email account--but if they cannot authenticate to said user's email
+
+web service--the spam bot will still ultimately fail to register a spam
+
+account on the website.
+
+
+The additional benefit in using this email system is that RaiderHacks
+
+can verify that whoever is requesting to register an account is indeed
+
+a real TTU student.
+
+
+The person whose email the account was registered under has less than
+
+3 minutes to click on the magic link sent to them before the HMAC
+
+sent to the user becomes invalid for account verification.
+
+
+But even email account verificaiton will not stop spam bots from spamming
+
+the server with fake accounts. After all, three minutes is **plenty** of 
+
+time for any computer to submit ***A LOT*** of fake accounts.
+
+
+The server is responsible for cleaning up failed account verifications.
+
+
+That is why **both** email verification and CAPTCHA are necessary together.
+
+After reading Practical Cryptography for Developers, you should be convinced
+
+Argon2id is the best hashing algorithm to use to replace BLAKE2b. Unlike
+
+BLAKE2b, it can be tweaked to fight against computers with a certain amount
+
+of cores for parallelism and RAM. It is also designed to be resistant
+
+agianst side channel attacks.
+
+One problem with Argon2ID is how are you going to make sure that the 
+
+computer was forced to use those parameters without first forcing the
+
+server to do them first? You can tell a client they need to compute
+
+the hash under a certain amount of parameters. But how are you going
+
+to ensure that the client did all the work. It is actually possible
+
+to find hashes that pass the test proposed by Friendly CAPTCHA faster
+
+than what we expected. Did you get the hint? The answer is measuring
+
+the amount of ***time*** it took for the client to complete the challenge.
+
+If the amount of time the user took to complete challenge is 
+
+less than the amount of time expected--and it is statistically
+
+significant (p-level < 5%), the client is blacklisted for at least
+
+5 minutes. :)
+
+Now, we can re-adopt the same technique that the original Friendly CAPTCHA
+
+used: that the client will have to discover a valid Argon2 hash whose
+
+first four bytes have a value less than a threshold.
+
+The problem that you are still worried about: you do realize you do not
+
+necessarily have to have computed the real Argon2ID hash...just to find
+
+a stupid 4 byte sequence that meets the minimum threshold.
+
+The Answer:
+
+Remember that only the last 8 bytes of the puzzle buffer are what the user 
+
+is allowed to change, remember. 
+
+So you actually DO need to use the real puzzle buffer to generate the final 
+
+hash.
+
+
+And remember, the HMAC is timestamped. So you cannot trick
+
+the server in submitting later than past the deadline. 
+
+The real problem is that the server must VERIFY the accursed hashes are proper.
+
+In Friendly CAPTCHA's setup, BLAKE2b was used to make this inexpensive for the server.
+
+
+But now that Argon2ID is being used it may be extremely time-consuming for the server to
+
+do the verification, especially since the attacker may have a stronger machine than
+
+the server.
+
+
+The server's best bet is to rely on the fact that the amount of ***time*** the server
+
+took to complete the puzzle statistically and insignificantly differs from
+
+the expected time. 
+
+
+The expected time is the average amount of time it takes for a computer with a specific
+
+number of cores and RAM to defeat a challenge of a specific byte length.
+
+There are three different kinds of machines that will try to make accounts:
+
+1. Average user's computer. So typically such machines have 4 cores and ~8 GB of RAM.
+
+2. Power user computers. These are the desktop computers that are used by power gamers.
+
+I am talking about the giant racks with 32 GB of RAM and 8 cores of CPU potential.
+
+3. Hash Cracking Titans: The Quanah Supercomputer counts as one. What makes it a 
+
+supercomputer at the time of this writing is that it has 72 logical CPU(s). But it
+
+only has 88 MB of RAM per user.
+
+
+In the real world, hash cracking machines focus on increasing the amount of CPU
+
+logical cores their machines support. This allows the cracker to make what
+
+is called a time/memory-space tradeoff. You are making a tradeoff between the
+
+amount of RAM required (tough to expand easily) versus the amount of logical CPU(s)
+
+required (much easier to expand).
+
+You should seriously read the Argon2 whitepaper to better understand what all of this
+
+means: 
+
+
+(https://www.password-hashing.net/submissions/specs/Argon-v3.pdf)
+
+According to the whitepaper, ASICs (Application Specific Inegrated Circuit),
+
+FPGAs, and multiple-core GPU machines all share the same weakness:
+
+It is still hard for all three of these devices to expand the amount of
+
+RAM they can use.
+ 
+
+
+Hierarchy of CAPTCHA Tests:
+
+1. The first test must take about three seconds, the amount of expected
+
+time it would take for a user to submit an account registration request
+
+at the bare minimum. The purpose of this CAPTCHA is to STOP untargeted
+
+spam bots from getting in. In the future, we expect Friendly CAPTCHA
+
+systems to become widespread.
+
+
+---------------------------------------------------------------------------
+
+Design of Email Verification System
+
 ---------------------------------------------------------------------------
 
 Further Research on Server Relief
@@ -461,9 +798,7 @@ Server Relief:
 
 (https://security.stackexchange.com/questions/224629/password-hashing-that-is-resistant-to-asic-assisted-cracking-without-risking-dos)
 
-(https://tools.ietf.org/html/rfc5802)
-
-(https://openwall.info/wiki/people/solar/algorithms/challenge-response-authentication)
+Practical Cryptography for Developers
 
 (https://wizardforcel.gitbooks.io/practical-cryptography-for-developers-book/content/mac-and-key-derivation/argon2.html)
 
@@ -1131,7 +1466,7 @@ challenge.
 
 **But** the user is supposed to leave the:
 
-Base64( HMAC-SHA256-128( secret_key, input_message) )
+Base64( HMAC-SHA256-128( secret_key, input_message[0:31]) )
 
 untouched. 
 
