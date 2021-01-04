@@ -655,7 +655,7 @@ of cores for parallelism and RAM. It is also designed to be resistant
 
 agianst side channel attacks.
 
-One problem with Argon2ID is how are you going to make sure that the 
+One problem with Argon2D is how are you going to make sure that the 
 
 computer was forced to use those parameters without first forcing the
 
@@ -687,7 +687,7 @@ first four bytes have a value less than a threshold.
 
 The problem that you are still worried about: you do realize you do not
 
-necessarily have to have computed the real Argon2ID hash...just to find
+necessarily have to have computed the real Argon2D hash...just to find
 
 a stupid 4 byte sequence that meets the minimum threshold.
 
@@ -711,7 +711,7 @@ The real problem is that the server must VERIFY the accursed hashes are proper.
 In Friendly CAPTCHA's setup, BLAKE2b was used to make this inexpensive for the server.
 
 
-But now that Argon2ID is being used it may be extremely time-consuming for the server to
+But now that Argon2D is being used it may be extremely time-consuming for the server to
 
 do the verification, especially since the attacker may have a stronger machine than
 
@@ -768,8 +768,34 @@ FPGAs, and multiple-core GPU machines all share the same weakness:
 It is still hard for all three of these devices to expand the amount of
 
 RAM they can use.
- 
 
+The whitepaper reports Argon2D is recommended for backend servers and cryptocurrency
+
+mining. Since our proof-of-work for CAPTCHA forces the user to compute a one-time
+
+hash, there is really little value in anyone doing a side-channel attack to figure
+
+out what the hash the client discovered was. Argon2D is actually preferable over
+
+Argon2ID in this specific case.
+
+The Argon2 Whitepaper said the following about user parameters:
+
+1. Amount of memory M: make this as large as possible.
+
+2. Number oT passes over the memory. Make this as large as possible.
+
+3. Degree d of Parallelism: Ideally double the number of CPU cores.
+ 
+According to the Argon2 Whitepaper, the purpose in designing Argon2
+
+was to increase the amount of time it would take
+
+for ASICs to crack hashes while having the same
+
+execution time on CPU due to parallelism and
+
+pipelining.
 
 Hierarchy of CAPTCHA Tests:
 
