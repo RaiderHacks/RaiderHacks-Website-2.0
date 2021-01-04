@@ -48,7 +48,7 @@ def register():
 
             return render_template('auth/register.html'),400
 
-        if zxcvbn(test).get('score') < 4:
+        if zxcvbn(str(test)).get('score') < 4:
 
             print("ZXCVBN test failure; Blacklisting [IPv4 address here]")
 
