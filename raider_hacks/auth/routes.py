@@ -45,11 +45,11 @@ def register():
             flash('User already exsists!', 'danger')
             return render_template('auth/register.html')
         else:
-            recipiants = ['notjoemartinez@protonmail.com']
-            for email in recipiants:
-                msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
-                msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
-                mail.send(msg)
+            # recipiants = ['notjoemartinez@protonmail.com']
+            # for email in recipiants:
+            #     msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
+            #     msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
+            #     mail.send(msg)
 
             # Insert new user into SQL
             db.session.add(new_user)
@@ -66,14 +66,14 @@ def login():
     if request.method == 'GET':
         return render_template('auth/login.html')
 
-    else:
+    elif request.method == 'POST':
         # username = request.form.get('username')
         email = request.form.get('email')
         password_candidate = request.form.get('password')
-
+        print(email)
         # Query for a user with the provided email 
         result = User.query.filter_by(email=email).first()
-
+        print(password_candidate, result, type(result))
         # If a user exsists and passwords match - login
         if result is not None and sha256_crypt.verify(password_candidate, result.password):
 

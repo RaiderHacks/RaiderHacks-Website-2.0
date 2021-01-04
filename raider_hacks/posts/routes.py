@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template
-
-from flask import render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, Markup
+import markdown
+import markdown.extensions.fenced_code
+from pygments.formatters import HtmlFormatter
+import logging
+from flask import request, redirect, url_for, flash
 from flask import Blueprint, render_template
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
@@ -18,7 +21,6 @@ post_bp = Blueprint('post', __name__,
 )
 
 
-
 @post_bp.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
@@ -31,6 +33,7 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user, permissions=form.permissions.data)
+        # convert to markdown before sending
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
@@ -40,7 +43,18 @@ def new_post():
 @post_bp.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('posts/post.html', title=post.title, post=post)
+
+    # convert to markdown
+    md_template = markdown.markdown(post.content, extensions=["fenced_code", "codehilite"])
+
+    # format code blocks with css  
+    formatter = HtmlFormatter(style="tango",full=True,cssclass="codehilite")
+    css_string = formatter.get_style_defs()
+    md_css_string = "<style>" + css_string + "</style>"
+    # conacatinate css and html markdown
+    html_md = md_css_string + md_template 
+
+    return render_template('posts/post.html', title=post.title, post=post, html_md=Markup(html_md))
 
 @post_bp.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
@@ -70,3 +84,5 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('index'))
+
+
