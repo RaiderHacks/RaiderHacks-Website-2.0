@@ -15,6 +15,8 @@ import nacl.utils
 
 import base64
 
+from zxcvbn import zxcvbn
+
 
 auth_bp = Blueprint('auth', __name__,
     template_folder='templates',
@@ -33,6 +35,25 @@ def register():
         passwd1 = request.form.get('password1') # Now a base64-encoded client-side hash
         
         passwd2 = request.form.get('password2') # Now a base64-encoded client-side hash
+
+        # Check if the password passes ZXCVBN test and is actually Base64 Encoded
+
+        # Otherwise IPv4address + username combination blacklisted using Blake2b
+
+        try:
+            test = base64.b64decode(passwd2)
+
+        except ValueError:
+            print("Base64 Decoding failure; Blacklisting [IPv4 address here]")
+
+            return render_template('auth/register.html'),400
+
+        if zxcvbn(test).get('score') < 4:
+
+            print("ZXCVBN test failure; Blacklisting [IPv4 address here]")
+
+            return render_template('auth/register.html'),400
+
 
         # Checks if passwords match
         if passwd1 != passwd2 or passwd1 == None:
