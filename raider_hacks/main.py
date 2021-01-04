@@ -32,5 +32,15 @@ def addachievements():
 def about():
     return render_template("about.html")
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/forgotpassword")
+def forgotpassword():
+    return render_template("forgotpassword.html")
 
 
+@app.route("/forgotusername")
+def forgotusername():
+    return render_template("forgotusername.html")

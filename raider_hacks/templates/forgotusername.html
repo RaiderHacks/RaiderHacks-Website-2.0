@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<link rel="stylesheet" href="static/styles/login.css">
+
+    <div class="container">
+    <div class="form-container">
+    <form action="#" method="POST" class="form-wrap">
+        <h1>Change Email</h1>
+   
+
+        <h5 class="mt-3">Please enter your current email address</h5>
+     <div class="form-group">
+      <label for="email" class="mt-3">TTU Email</label>
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$" class="form-control" id="email" name="currentemail" placeholder="John.Doe@ttu.edu">
+    </div>
+
+    <h5 class="mt-5">Please enter your new email address</h5>
+     <div class="form-group">
+      <label for="email" class="mt-3">TTU Email</label>
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$" class="form-control" id="email" name="newemail" placeholder="John.Doe@ttu.edu">
+    </div>
+        <div class="form-submit mt-3">
+            <input type="submit" value="Send" />
+        </div>
+    </form>
+</div>
+</div>
+
+{% endblock content %}
