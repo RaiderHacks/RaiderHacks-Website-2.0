@@ -1,0 +1,16 @@
+body {
+    padding-top: 5%;
+   
+}
+
+.form-wrap{
+    padding: 1em 1em 1em 1em;
+    margin: 0 20px 10px 0;
+    border:medium groove grey;
+    position: relative;
+}
+
+.row{
+    background: rgba(61, 68, 0, 0.027);
+}
+
