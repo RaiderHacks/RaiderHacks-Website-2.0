@@ -11,6 +11,18 @@ Denial of service attack: attacker may attempt to login too many times to overlo
 
 The protection from this attack is similar to the previous attack: use a CAPTCHA and delay the login process for certain IP address after each login attempt.
 
+The problem with modern CAPTCHAs is that they are defeatable:
+
+(https://nakedsecurity.sophos.com/2017/11/01/now-anyone-can-fool-recaptcha/)
+
+Friendly CAPTCHA pointed out all the flaws of modern CAPTCHA:
+
+(https://friendlycaptcha.com/#unfriendly)
+
+You can always defeat reCAPTCHA with average software
+
+But do you have the right hardware requirements?
+
 Practical Cryptography for Developers
 
 The Argon2 Whitepaper recommends a simple proof-of-work takes 100 milliseconds,
@@ -43,7 +55,7 @@ For the CAPTCHA test meant to thwart supercomputers, we wish to force them to ta
 
 185 seconds before they finally pass the CAPTCHA challenge.
 
-Based on the fact that each Argon2D hash calculation takes ~100 milliseconds, this will
+Based on the fact that each Argon2ID hash calculation takes ~100 milliseconds, this will
 
 mean the computer should have to guess amongst 222,000 bit combinations before finally
 
@@ -99,7 +111,7 @@ or shortcut their way around this since the client will be required to send
 
 back the challenge puzzle buffer with the final byte that makes the entire
 
-puzzle buffer output the exact Argon2D hash that meets the challenge.
+puzzle buffer output the exact Argon2ID hash that meets the challenge.
 
 
 The way the browser test will work is that the first base64 character in the
@@ -108,7 +120,7 @@ final Argon2 hash will be equal to the verification base64 character. Of course,
 
 the user will not get away with brute-force figuring out what that single
 
-base64 character is all by itself since the server will actually Argon2D hash
+base64 character is all by itself since the server will actually Argon2ID hash
 
 the puzzle buffer the client returns to the server anyway :)
 
@@ -146,13 +158,13 @@ the challenge versus the expected time. If the p-level < 5%, then the server
 gives the next challenge or blacklists the client machine.
 
 
-3. Once the client finds the correct puzzle buffer that maps to an Argon2D
+3. Once the client finds the correct puzzle buffer that maps to an Argon2ID
 
 hash that begins with the correct Base64 character, the client will send
 
-the correct puzzle buffer and the corresponding Argon2D hash.
+the correct puzzle buffer and the corresponding Argon2ID hash.
 
-4. The server verifies that the puzzle buffer maps to the claimed Argon2D
+4. The server verifies that the puzzle buffer maps to the claimed Argon2ID
 
 hash and that the hash begins with the required Base64 character. 
 
@@ -307,7 +319,7 @@ a 256-bit nonce and with it the HMAC-SHA256.
 
 Its the client's job to calculate the memory-expensive 256-bit Argon2ID hash, and the Blake2B 
 
-verification hash of the Argon2D 
+verification hash of the Argon2ID 
 
 hash that the client calculated. 
 
@@ -441,7 +453,7 @@ bot on the Quanah/RedRaider cluster nor any cloud-hosted
 
 solution for that matter. He knows that these services do
 
-not have the RAM to pass the Argon2D test, which requires
+not have the RAM to pass the Argon2ID test, which requires
 
 a whoppin' 1 GB of RAM to pass.
 
@@ -488,7 +500,7 @@ Adib is not a fool. He has read the backend of the server
 implementation very carefully. 
 
 
-He knows he cannot bypass the Argon2D CAPTCHA test 
+He knows he cannot bypass the Argon2ID CAPTCHA test 
 
 on the registration page since the server knows what the 
 
@@ -707,7 +719,7 @@ test fails.
 
 Testing 1.5 GB RAM and 8 cores of parallelism on Windows Power Machine 
 
-This Argon2D setup was tested on a client desktop
+This Argon2ID setup was tested on a client desktop
 
 running Windows 10, 32 GB of RAM, and 32 logical CPUs.
 
@@ -719,7 +731,7 @@ on that machine.
 
 Testing 1.5 GB RAM and 8 cores of parallelism on Linux laptop
 
-This Argon2D setup was tested on a client laptop
+This Argon2ID setup was tested on a client laptop
 
 running ArchLinux (5.4.77-1-lts), 8 GB of RAM,
 
@@ -747,4 +759,210 @@ The idea of requiring needs to be tested on a 64-bit
 
 system with 4 GB of RAM and 4 logical CPU(s)
 
+--------------------------------------------------------
 
+Results For Testing on HP Pavilion x360
+
+4 GB of RAM; 4 logical CPU(s)
+
+The Argon2ID hash took ~6 seconds to compute for
+
+786432 KiB of RAM and 8 counts of parallelism
+
+-------------------------------------------------------
+
+Results For Testing on Macbook Pro (13-inch, Mid 2012)
+
+2 Logical CPU(s) ; 4 GB of RAM
+
+Even this old legacy Mackbook Pro only took ~3.2 seconds
+
+to complete.
+
+At any given time, the top command reported there was only
+
+~0.7 MB free at any time. Yet, the Argon2 hash computed
+
+successively.
+
+Since legacy systems like the Macbook Pro only have 2 logical
+
+CPU(s), the parallelism count must be set to 4 and **NOT**
+
+8.
+
+--------------------------------------------------------
+
+Results For Testing on Manjaro Linux
+
+1 Logical CPU(s) ; 4 GB of RAM; Intel VT-x
+
+Hardware-Accelerated Virtualization on VirtualBox
+
+Even this configuration passes in ~4 seconds.
+
+--------------------------------------------------------
+
+Results For Testing on Manjaro Linux
+
+1 Logical CPU(s) ; 2 GB of RAM; Intel VT-x
+
+This last test ensures that no machine with less than
+
+4 GB of RAM succeeds. Surely enough, this setup failed
+
+to produce the computation when the argon2 memory-hard
+
+limit was set to 1024 * 1024 * 1.5 KiB = 1572864 KiB
+
+
+--------------------------------------------------------
+
+Thoughts For Future Generations
+
+In the future, the minimum amount of RAM necessary
+
+for daily personal Internet Usage will rise to 8 GB.
+
+And the expected amount of RAM on all IoT devices
+
+**NOT** suitable for personal Internet usage will
+
+be 4 GB of RAM.
+
+When this happens, the new memory-hard limit will be:
+
+1024 * 1024 * 3.0 KiB = 3145728 KiB of RAM.
+
+This will stop any newer IoT devices not used for daily
+
+computer usage from successfully submitting forms to the
+
+server.
+
+--------------------------------------------------------
+
+IoT Devices **NOT** suitable for Daily Personal
+
+Computer Usage
+
+IoT devices **NOT** suitable for daily personal
+
+Internet usage include servers, supercomputer clusters
+
+(e.g. Quanah ), and of course spam bots--including
+
+web crawlers from Big Fancy Tech Companies--that
+
+track users with cross-site cookies.
+
+None of these devices have any business submitting
+
+forms to the RaiderHacks server or tracking
+
+the user (cross-site cookies).
+
+And the memory hard limit of 1572864 KiB is going
+
+to make it impossible for any spam bots operating
+
+on them from logging in.
+
+--------------------------------------------------------
+
+HoneyPot Fields
+
+So whatever happened to spam bots operating on >= 4 GB
+
+of RAM machines? Zombie computers still are--and always
+
+will--be a problem on the Internet.
+
+Well, there are other reasons such zombie spam bots
+
+will fail.
+
+Keep in mind that in order for a spam bot to do its
+
+job it needs to be able to submit HTTP POST requests.
+
+Any coder with web development experience will
+
+understand you do not necessarily need Javascript
+
+to do this.
+
+
+To this day, a significant portion of spam
+
+bots do not bother rendering Javascript found on
+
+web pages. Doing so would still make a spam bot
+
+lag in performance.
+
+This is a great reason Youtube forces the user
+
+to execute Javascript just to find a Youtube
+
+channel host's email address when viewing
+
+the "About" page of said Youtube channel
+
+host. For an example of what I am talking
+
+about, check out the following page:
+
+https://www.youtube.com/channel/UCYY5GWf7MHFJ6DZeHreoXgw/about
+
+So simply having 4 GB of RAM is not enough. Deliberately
+
+designing a bot that is actually capable of designing
+
+a bot capable of running browser Javascript is a must
+
+for a robot to actually successfully submit forms
+
+that have a chance of getting accepted.
+
+To be honest, we might even consider even requiring
+
+Javascript to be executed before an HTTP POST request
+
+is successfully made upon visiting the site. In fact,
+
+this is basically what was done. The client must execute
+
+the "create_account()" function on both the login
+
+and registration pages before the final HTTP POST request
+
+is actually made using an XML HTTP POST Request.
+
+So all spam bot
+
+In general the following configuration is best since
+
+we wish machines with at least 4 GB of RAM to be supported:
+
+time echo -n "password" | argon2 spartacus -id -t 1 -k 1572864 -p 4 -l 64 -e
+
+A computer with at least 4 GB of RAM should survive this test
+
+--------------------------------------------------------
+
+Honeypot Fields: Rationale
+
+Remember that if a spam bot has at least 4 GB of RAM
+
+AND
+
+renders Javascript it will succeed the Argon2ID
+
+(https://dev.to/felipperegazio/how-to-create-a-simple-honeypot-to-protect-your-web-forms-from-spammers--25n8)
+
+Honeypot fields can easily help distinguish robots.
+
+Consider how we can trick bots into giving away their identity.
+
+On our registration page, 

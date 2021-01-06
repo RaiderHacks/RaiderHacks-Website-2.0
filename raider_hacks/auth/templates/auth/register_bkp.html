@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% block content %}
+<link rel="stylesheet" href="static/styles/register.css">
+<div class="container">
+  <h1 class="text-center">Register</h1>
+  <form action="/register" id="postform" method="POST">
+
+    <div class="form-group">
+      <label for="fname">First Name</label>
+      <input class="form-control" id="fname" name="fname" placeholder="John" required>
+    </div>
+
+    <div class="form-group">
+      <label for="lname">Last Name</label>
+      <input class="form-control" id="lname" name="lname" placeholder="Doe" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Student Email Address</label>
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="form-control" id="email" name="email" placeholder="John.Doe@ttu.edu">
+      <small id="emailHelp" class="form-text text-muted">Must end with ttu.edu</small>
+    </div>
+
+    <div class="form-group">
+      <label for="password1">Password</label>
+      <input type="password" class="form-control" id="password1" name="password1" placeholder="RaiderPower">
+    </div>
+
+    <div class="form-group">
+      <label for="password2">Confirm Password</label>
+      <input type="password" class="form-control" id="password2" name="password2" placeholder="Don't actually use RaiderPower">
+    </div>
+
+    <div class="checkbox mb-3">
+      <label>
+        <a href="/login">Login</a>
+      </label>
+    </div>
+
+    <input type="button" value="Register" onclick="create_account();"><br><br>
+
+</form>
+
+<script type="text/javascript" src="../../../static/scripts/zxcvbn.js"></script>
+
+<script type="text/javascript" src="../../../static/scripts/sodium_formatted.js" async></script>
+
+<script>
+	window.sodium = {
+
+			onload: function(sodium)	{
+
+			}
+		};
+
+</script>
+
+
+
+<script>
+
+function create_account()
+{
+	if ( document.getElementById('password1').value != document.getElementById('password2').value )
+	{
+		console.log("Error: Passwords do not match!");
+		return;
+	}
+
+	if ( document.getElementById('password2').value == "" )
+	{
+		console.log("Error: No password entered!\n");
+
+		return;
+	}
+
+	var result = zxcvbn(document.getElementById('password2').value);
+
+	if ( result.score < 4 )
+	{
+		console.log("Error: Password too weak!!!\n");
+		console.log(result.feedback.warning);
+
+		console.log(result.feedback.suggestions);
+		console.log(result.calc_time);
+
+		return;
+	}
+
+	var salt = sodium.randombytes_buf(16);
+
+	var i = 0;
+
+	while ( i < 16 )
+	{
+		salt[i] = 0;
+
+		i++;
+	}
+
+	var hash_salt = document.getElementById('password2').value + document.getElementById('email').value;
+
+	console.log(salt);
+
+
+	var t0 = performance.now();
+	
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
+
+	var t1 = performance.now();
+
+	console.log("Time duration:");
+
+	console.log( (t1-t0)/1000 );
+
+	var out_base64 = btoa(out);
+
+	console.log("Base64 Encoded H_1: " + out_base64);
+	
+	document.getElementById('password2').value = out_base64;
+	
+	document.getElementById('password1').value = out_base64;
+
+	var xhr = new XMLHttpRequest();
+
+	xhr.open(document.getElementById('postform').method,document.getElementById('postform').action,true);
+
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+
+	var x = 'password1=' + document.getElementById('password1').value + '&password2=' + document.getElementById('password2').value + '&fname=' + document.getElementById('fname').value + '&lname=' + document.getElementById('lname').value + '&email=' + document.getElementById('email').value;
+
+	xhr.send(x);
+
+	xhr.onload = function()
+	{
+		console.log("xhr status");
+
+		console.log(xhr.status);
+
+		user_status = xhr.responseText;
+
+		console.log(user_status);
+
+	}
+	
+}
+
+</script>
+
+
+{% endblock content %}

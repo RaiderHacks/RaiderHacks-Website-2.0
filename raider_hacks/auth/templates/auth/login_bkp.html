@@ -59,11 +59,7 @@ function create_account()
 
 	var t0 = performance.now();
 	
-//	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
-
-//	Equivalent to 768432 KiB of memory in argon2 antelle library
-
-	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,805306400,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
 
 	var t1 = performance.now();
 
