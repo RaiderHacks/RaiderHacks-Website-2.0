@@ -13,14 +13,11 @@
   font-size: 20px;
 }
 
-#linode {
-  max-height: 40px;
-  margin-right: 150px;
+#hacker-access{
+  display: flex;
+  align-items: center;
 }
-#github {
-  max-height: 40px;
-}
-
+ 
 @media only screen and (max-width: 900px) {
   /* For mobile phones: */
   .footer span{

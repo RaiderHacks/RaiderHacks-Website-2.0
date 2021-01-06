@@ -8,4 +8,13 @@ env
 __pycashe__
 run.sh
 *.db
+<<<<<<< HEAD
 RUNME.sh
+=======
+
+flask_app/static/images/profile_pics/*.jpg
+flask_app/static/images/profile_pics/*.png
+flask_app/static/images/profile_pics/*.JPG
+flask_app/static/images/profile_pics/*.jpeg
+*.log
+>>>>>>> main

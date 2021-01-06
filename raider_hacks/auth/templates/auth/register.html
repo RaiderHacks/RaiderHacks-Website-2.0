@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+
 <link rel="stylesheet" href="static/styles/register.css">
+<<<<<<< HEAD
 <div class="container">
   <h1 class="text-center">Register</h1>
   <form action="/register" id="postform" method="POST">
@@ -149,5 +151,31 @@ function create_account()
 
 </script>
 
+=======
+<body class="text-center">
+    
+  <main class="form-signin">
+    <form method="POST">
+
+      <img class="mb-4" src="../static/images/logo.png" alt="" width="50" height="50">
+      <h1 class="h3 mb-3 fw-normal">Register</h1>
+
+      <input class="form-control" id="fname" name="fname" placeholder="First Name" required>
+
+      <input class="form-control" id="lname" name="lname" placeholder="Last Name" required>
+
+      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="form-control" id="email" name="email" placeholder="Student Email (Must end with ttu.edu)">
+
+      <input type="password" class="form-control" id="password1" name="password1" placeholder="Password" required>
+      <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password">
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+      <p> Already a member? <a href="/login">Sign in!</a></p>
+
+    </form>
+  </main>
+  
+</body>
+>>>>>>> main
 
 {% endblock content %}
