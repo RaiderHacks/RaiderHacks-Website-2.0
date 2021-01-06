@@ -2,7 +2,6 @@
 {% block content %}
 
 <link rel="stylesheet" href="static/styles/login.css">
-<<<<<<< HEAD
 <div class="container">
   <form action="/login" id = "postform" method="POST">
     <div class="mx-auto">
@@ -64,7 +63,7 @@ function create_account()
 
 //	Equivalent to 768432 KiB of memory in argon2 antelle library
 
-	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,1342177000,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,1879048000,sodium.crypto_pwhash_ALG_DEFAULT);
 
 	var t1 = performance.now();
 
@@ -105,28 +104,6 @@ function create_account()
 }
 
 </script>
-
-=======
-<body class="text-center">
-    
-  <main class="form-signin">
-    <form action="/login" method="POST">
-      <img class="mb-4" src="../static/images/logo.png" alt="" width="50" height="50">
-      <h1 class="h3 mb-3 fw-normal">Login</h1>
-
-      <label for="email" class="visually-hidden">TTU Email</label>
-      <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="form-control" id="email" name="email" placeholder="Email">
-
-      <label for="password" class="visually-hidden">Password</label>
-      
-      <input type="password" id="password" class="form-control" placeholder="Password" name="password" required>
-
-      <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
-      <p> Not a member? <a href="/register">Sign up!</a></p>
-    </form>
-  </main>
-  
   
 </body>
->>>>>>> main
 {% endblock content %}
