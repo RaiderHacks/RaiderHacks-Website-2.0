@@ -6,7 +6,6 @@ document.getElementById('frm').addEventListener('submit', function (e) {
 document
     .getElementById('btnCalcWasm')
     .addEventListener('click', calc(calcWasm));
-/*
 document
     .getElementById('btnCalcWasmWorker')
     .addEventListener('click', function () {
@@ -18,8 +17,6 @@ document
         calcWorker('simd');
     });
 
-*/
-
 function loadScript(src, onload, onerror) {
     var el = document.createElement('script');
     el.src = src;
@@ -28,7 +25,6 @@ function loadScript(src, onload, onerror) {
     document.body.appendChild(el);
 }
 
-/*
 var worker;
 function calcWorker(method) {
     clearLog();
@@ -53,17 +49,16 @@ function calcWorker(method) {
         }
     };
 }
-*/
 
 function getArg() {
     return {
-        pass: document.getElementById('txtPassword').value,
-        salt: document.getElementById('txtSalt').value,
-        time: +(1),
-        mem: +( 1835008),
-        hashLen: +( 64),
-        parallelism: +(4),
-        type: +"2",
+        pass: document.getElementById('txtPassword').value || 'password',
+        salt: document.getElementById('txtSalt').value || 'somesalt',
+        time: +(document.getElementById('txtIt').value || 1),
+        mem: +(document.getElementById('txtMem').value || 1024),
+        hashLen: +(document.getElementById('txtLen').value || 32),
+        parallelism: +(document.getElementById('txtPar').value || 1),
+        type: +document.querySelector('[name=radioType]:checked').value,
     };
 }
 
