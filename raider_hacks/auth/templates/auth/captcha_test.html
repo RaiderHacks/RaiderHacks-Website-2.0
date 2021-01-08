@@ -1,0 +1,67 @@
+<html>
+<body>
+
+<input type="button" value="Start CAPTCHA" onclick="captcha_test();"><br><br>
+		
+<script type="text/javascript" src="../../../static/scripts/sodium_formatted.js" async></script>
+
+<script>
+
+	window.sodium = {
+
+			onload: function(sodium)	{
+
+			}
+		};
+
+</script>
+
+<script>
+
+
+	function captcha_test()
+	{
+		console.log("Initiating CAPTCHA test");
+
+		var out = ""
+
+		var salt = sodium.randombytes_buf(16);
+
+		var puzzle = sodium.randombytes_buf(33);
+
+		var sum = 0;
+
+		var i = 0;
+
+		var t0 = 0;
+
+		var t1 = 0;
+
+		while ( i < 1024 )
+		{
+			console.log("Cycle " + i);
+
+			t0 = performance.now()
+		
+		
+			out = sodium.crypto_pwhash(64,puzzle,salt,1,838861,sodium.crypto_pwhash_ALG_DEFAULT);
+
+			t1 = performance.now()
+
+			sum += (t1-t0);
+
+			i += 1;
+
+		}
+	
+		console.log(sum/1024/1000);
+
+	}
+
+
+		
+</script>
+
+
+</body>
+</html>
