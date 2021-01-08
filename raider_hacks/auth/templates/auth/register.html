@@ -62,6 +62,14 @@
 
 function create_account()
 {
+
+	// CAPTCHA test first
+
+	// It takes 2 seconds
+
+	// The client must perform an argon2d hash every 32 milliseconds
+
+		
 	if ( document.getElementById('password1').value != document.getElementById('password2').value )
 	{
 		console.log("Error: Passwords do not match!");
@@ -106,7 +114,9 @@ function create_account()
 
 	var t0 = performance.now();
 	
-	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,805306400,sodium.crypto_pwhash_ALG_DEFAULT);
+
+//	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
 
 	var t1 = performance.now();
 

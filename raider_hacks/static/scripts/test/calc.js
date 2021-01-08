@@ -86,6 +86,7 @@ function calcBinaryen(method, options) {
     };
 
     var wasmFileName = 'argon2.wasm';
+
     if (options && options.simd) {
         wasmFileName = 'argon2-simd.wasm';
     }

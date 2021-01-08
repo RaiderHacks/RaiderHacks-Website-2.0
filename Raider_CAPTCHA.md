@@ -949,20 +949,370 @@ time echo -n "password" | argon2 spartacus -id -t 1 -k 1572864 -p 4 -l 64 -e
 
 A computer with at least 4 GB of RAM should survive this test
 
---------------------------------------------------------
+------------------------------------------------------
 
-Honeypot Fields: Rationale
+Exploring the Dangers of CryptoJacking helped me
 
-Remember that if a spam bot has at least 4 GB of RAM
+realize how Proof-Of-Work will defend against
 
-AND
+spam.
 
-renders Javascript it will succeed the Argon2ID
+Consider the following scenario:
 
-(https://dev.to/felipperegazio/how-to-create-a-simple-honeypot-to-protect-your-web-forms-from-spammers--25n8)
+A TTU student takes advantage of the Quanah
 
-Honeypot fields can easily help distinguish robots.
+supercomputer cluster to defeat the Friendly
 
-Consider how we can trick bots into giving away their identity.
+PoW challenge. He or she is not technically
 
-On our registration page, 
+cryptocurrency mining, so this is not
+
+illegal.
+
+The spam bot on the server takes advantage
+
+of 72 logical CPU(s) on the Quanah
+
+cluster to quickly defeat the Friendly
+
+PoW challenge. The bot can simply cause
+
+72 instance of Blake2b to execute in parallel.
+
+Now, according to the original Friendly
+
+PoW algorithm. When the first 4 bytes of
+
+the final Blake2b match the 4 bytes that
+
+the server is looking for, the HTTP POST
+
+request is accepted.
+
+Now, considering a single SHA256 hash
+
+works in around 5 microseconds on my
+
+machine, the computer is calculating
+
+at a rate of 200,000 H/second.
+
+Now, that the Quanah computer has
+
+72X the efficiency, that's now:
+
+14400000 H/second.
+
+Let us assume the original CAPTCHA
+
+test was designed to last ~2 seconds
+
+on average. Indeed, that is what
+
+the demo page of Friendly CAPTCHA
+
+demonstrates.
+
+(https://friendlycaptcha.com/demo)
+
+
+Now, the number of average guesses
+
+before getting a match would
+
+thus be calculated as:
+
+x guesses * 1 second/200000 = 400000
+
+So its supposed to take an average
+
+of 400,000 guesses before an average
+
+user computer ( 4 logical CPU(s);
+
+2.5 GHz; 8 GB of RAM ) as of January
+
+2021 gets a match.
+
+Let us calculate the bits of entropy
+
+in that:
+
+log(400000)/log(2) == 19 bits of entropy
+
+19 bits literally fits in three bytes.
+
+So for verification, the server will
+
+check the first 19 bits of the final SHA256
+
+and the rest of the
+
+bits are completely ignored.
+
+With the power of the Quanah cluster,
+
+the attacker will figure out the
+
+puzzle in the amount of time
+
+based on the following calculation:
+
+
+Recall the Quanah cluster can churn
+
+around 14400000 H/second.
+
+Now it will take 400000 guesses/14400000 guesses/second == 0.027777777777777776 seconds
+
+That's around ~278 milliseconds.
+
+NGINX allows recommends limiting
+
+the rate at which clients
+
+submit requests to the site at
+
+a rate of no more than
+
+30 requests/minute.
+
+You can literally configure NGINX
+
+to behave like this:
+
+(https://www.nginx.com/blog/mitigating-ddos-attacks-with-nginx-and-nginx-plus/)
+
+The problem with this approach
+
+is that it limits client's 
+
+requests based on IPv4 address.
+
+It is not hard for a client to
+
+spoof their IPv4 address.
+
+So when the spam bot operating
+
+on the Quanah cluster is running
+
+its PoW algorithm at 72 cores of
+
+parallelism **and** spoofs its
+
+IPv4 address with the help of
+
+Tor, it will get away with
+
+submitting hashes every 278
+
+milliseconds.
+
+So every minute its going to
+
+successfully submit
+
+( 60 seconds * 1000 ms ) / 278 ms
+
+== 216 requests/minute.
+
+We are counting on any client
+
+being able to only submit at the
+
+worst 30 requests/minute to
+
+help the server cleanup failed
+
+registrations. The more accounts
+
+the server has to delete during
+
+account registration verification,
+
+the slower and more sluggish
+
+the process will be.
+
+This is **eight times** as many
+
+requests as what NGINX was designed
+
+to defend against.
+
+Remember, the sender of information
+
+on the Internet has full control
+
+over what they send to someone.
+
+That is not a good sign.
+
+I really wish it was not **THAT** easy
+
+for a student to get their greedy hands
+
+on a computer with powerful parallelism
+
+support, but just to let you know if
+
+you are still a paying TTU student,
+
+the following BASH command will allow
+
+you to login to the HPCC Quanah cluster:
+
+$ssh -p 22 eraider-username@ssh.ttu.edu
+
+Obviously, TTU is not the only university
+
+giving students real access to parallel
+
+computing clusters. So are basically
+
+every other university under the sun.
+
+:O
+
+Obviously, the only reason a spam bot
+
+would succeed in bypassing the CAPTCHA
+
+test that fast is that it is a
+
+**targeted** spam bot attack--not an
+
+**un**targeted spam bot attack.
+
+To be fair, CAPTCHAs were invented to 
+
+defend against **un**targeted spam bot
+
+attacks.
+
+Obviously, it would be awesome
+
+if a CAPTCHA test existed that would
+
+help defend against both at the
+
+same time.
+
+It has to be in a manner that
+
+is extremely expensive for a targeted
+
+spam bot to bypass the test--whether
+
+it was unplanned (**un**targeted spam)
+
+or planned.
+
+So when we switch to Argon2ID and use
+
+a memory hard limit of:
+
+( ( 1024 * 1024 * 1.5 ) + ( 1024 * 1024 * 2 ) ) / 2
+
+== 1835008 KiB.
+
+If you have the fortune of having access
+
+to a titan computer ( 16 logical CPU(s) ),
+
+try this experiment on Antelle's document:
+
+Set the Memory to 1835008 KiB
+
+Do the following tests for Parallelism 
+
+counts of: 1,2,4,8,and 16.
+
+The number of iterations is 1.
+
+Use whatever you wish for all parameters,
+
+but make sure the amount of Memory is
+
+set to: 1835008 KiB.
+
+You will be shocked that it takes relatively
+
+the same amount of time despite increasing
+
+parallel counts. There is no escaping
+
+the algorithm that fills your machine
+
+with RAM. The algorithm that fills
+
+your computer with RAM requires previous
+
+data found from previous calculations
+
+in RAM to be reused in future calculations.
+
+A smart way to defeat many spam bots
+
+is to make the Memory (RAM) requirement
+
+so high it crashes the hash calculation
+
+on the spam bot. There are two ways
+
+this can happen, either Argon2 detects
+
+that there is not enoght memory and
+
+safely exits out of the program, or
+
+the kernel will literally kill the spam
+
+bot process. 
+
+If the bot is running in an actual
+
+command line environment, and the Quanah
+
+cluster counts, the Linux kernel will
+
+literally forcibly kill the spam bot
+
+process itself :).
+
+But if its a spam bot operating in the
+
+browser, then the argon2 web browser
+
+library will stop argon2 execution
+
+and exclaim: Memory Error: Memory
+
+cost too large. The above idea only
+
+works on login pages. You cannot
+
+easily do something like this
+
+on registration pages. What verification
+
+hash are you actually going to use 
+
+to ensure the text the registator
+
+submitted is authentic. You can
+
+try cryptojacking users that are
+
+already logged in but that wastes
+
+25-100% CPU power while they are
+
+logged in. This is not fair.
+
+On registration pages, it is best
+
+to adopt a variant of Friendly PoW's
+
+

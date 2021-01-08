@@ -116,7 +116,6 @@ function calcBinaryen(method, options) {
     xhr.send(null);
 }
 
-// calcHash() actually computes the argon2 hash
 function calcHash() {
     var arg = getArg();
     if (!Module._argon2_hash_ext) {
@@ -131,22 +130,22 @@ function calcHash() {
                 .join(', ')
     );
     var dt = now();
-    var t_cost = (arg && arg.time);
-    var m_cost = (arg && arg.mem);
-    var parallelism = (arg && arg.parallelism);
-    var passEncoded = encodeUtf8(arg.pass);
+    var t_cost = (arg && arg.time) || 10;
+    var m_cost = (arg && arg.mem) || 1024;
+    var parallelism = (arg && arg.parallelism) || 1;
+    var passEncoded = encodeUtf8(arg.pass || 'password');
     var pwd = allocateArray(passEncoded);
     var pwdlen = passEncoded.length;
-    var saltEncoded = encodeUtf8(arg.salt);
-    var argon2_type = (arg && arg.type);
+    var saltEncoded = encodeUtf8(arg.salt || 'email');
+    var argon2_type = (arg && arg.type) || 0;
     var salt = allocateArray(saltEncoded);
     var saltlen = saltEncoded.length;
     var hash = Module.allocate(
-        new Array((arg && arg.hashLen)),
+        new Array((arg && arg.hashLen) || 32),
         'i8',
         Module.ALLOC_NORMAL
     );
-    var hashlen = (arg && arg.hashLen);
+    var hashlen = (arg && arg.hashLen) || 32;
     var encodedlen = Module._argon2_encodedlen(
         t_cost,
         m_cost,
@@ -195,7 +194,6 @@ function calcHash() {
         for (var i = hash; i < hash + hashlen; i++) {
             hashArr.push(Module.HEAP8[i]);
         }
-// Below is the value we are looking for argon2 str format
         log('Encoded: ' + Module.UTF8ToString(encoded));
         log(
             'Hash: ' +

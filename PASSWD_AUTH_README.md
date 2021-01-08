@@ -1661,4 +1661,24 @@ https://developers.yubico.com/WebAuthn/Libraries/List_of_libraries.html
 
 https://developers.yubico.com/python-fido2/
 
+-----------------------------------------------------------------
 
+The entirety of ports 80 and 443 are vulnerable to spam attacks:
+
+especially on the login and registration pages. We need to
+
+setup a firewall-like system in Python to stop this.
+
+The builtin Python function "hash()" is suitable since it
+
+implements SipHash-2-4, a crpytographically secure
+
+shorthash function designed to be resistant to DoS
+
+attacks.
+
+A quick fix to the spam problem is to set "X-Frame-Options: "SAMEORIGIN""
+
+policy on NGINX:
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
