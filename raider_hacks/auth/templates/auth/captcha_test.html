@@ -37,14 +37,14 @@
 
 		var t1 = 0;
 
-		while ( i < 1024 )
+		while ( i < 30 )
 		{
 			console.log("Cycle " + i);
 
 			t0 = performance.now()
 		
 		
-			out = sodium.crypto_pwhash(64,puzzle,salt,1,838861,sodium.crypto_pwhash_ALG_DEFAULT);
+			out = sodium.crypto_pwhash(64,puzzle,salt,1,9500000,sodium.crypto_pwhash_ALG_DEFAULT);
 
 			t1 = performance.now()
 
@@ -54,7 +54,7 @@
 
 		}
 	
-		console.log(sum/1024/1000);
+		console.log(sum/30);
 
 	}
 
