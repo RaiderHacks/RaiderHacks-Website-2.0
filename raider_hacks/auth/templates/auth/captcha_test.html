@@ -1,7 +1,7 @@
 <html>
 <body>
 
-<input type="button" value="Start CAPTCHA" onclick="captcha_test();"><br><br>
+<input type="button" value="Start CAPTCHA" onclick="final_test();"><br><br>
 		
 <script type="text/javascript" src="../../../static/scripts/sodium_formatted.js" async></script>
 
@@ -21,6 +21,33 @@
 // So the 30th (zero-index) character in crypto_pwhash_str() is
 
 // the character we will stare at.
+
+	function final_test()
+	{
+		var i = 0;
+
+		var t0 = 0;
+
+		var t1 = 0;
+
+		var sum = 0;
+
+		while ( i < 30 )
+		{
+			t0 = performance.now();
+
+			captcha_test();
+
+			t1 = performance.now();
+
+			sum += ( t1 - t0 );
+
+			i++;	
+		}
+
+		console.log(sum/30);
+
+	}
 
 	function captcha_test()
 	{
@@ -56,7 +83,33 @@
 		{
 //			console.log("Cycle " + i);
 		
-			out = sodium.crypto_pwhash_str(puzzle,1,9500000);
+//			out = sodium.crypto_pwhash_str(puzzle,1,9500000);
+			
+//			out = sodium.crypto_pwhash_str(puzzle,1,9000000);
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,8750000);
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,8000000);
+
+			out = sodium.crypto_pwhash_str(puzzle,1,7500000); // This is our current choice
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,7250000);
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,7000000);
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,6625000);
+			
+//			out = sodium.crypto_pwhash_str(puzzle,1,6562500);
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,6500000); // Considering from 6500000 - 7000000
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,6250000);
+			
+//			out = sodium.crypto_pwhash_str(puzzle,1,6000000);
+			
+//			out = sodium.crypto_pwhash_str(puzzle,1,6125000); 
+
+//			out = sodium.crypto_pwhash_str(puzzle,1,6375000);
 
 //			console.log(out);
 
