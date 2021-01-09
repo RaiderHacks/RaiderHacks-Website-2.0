@@ -18,9 +18,16 @@
 
 <script>
 
+// So the 30th (zero-index) character in crypto_pwhash_str() is
+
+// the character we will stare at.
 
 	function captcha_test()
 	{
+		var ans = sodium.randombytes_buf(1) & 0x1f;
+
+		console.log("ans is: " + ans);
+
 		console.log("Initiating CAPTCHA test");
 
 		var out = ""
@@ -29,32 +36,81 @@
 
 		var puzzle = sodium.randombytes_buf(33);
 
-		var sum = 0;
+		puzzle[32] = String.fromCharCode(0);
 
-		var i = 0;
+		var num = 0;
 
-		var t0 = 0;
+		var c = 0;
+
+		var conv = 0;
 
 		var t1 = 0;
 
-		while ( i < 30 )
+		console.log(out[30]);
+
+		var i = 0;
+		
+		var t0 = performance.now();
+
+		do 		
 		{
-			console.log("Cycle " + i);
-
-			t0 = performance.now()
+//			console.log("Cycle " + i);
 		
-		
-			out = sodium.crypto_pwhash(64,puzzle,salt,1,9500000,sodium.crypto_pwhash_ALG_DEFAULT);
+			out = sodium.crypto_pwhash_str(puzzle,1,9500000);
 
-			t1 = performance.now()
+//			console.log(out);
 
-			sum += (t1-t0);
+			c = out[30].charCodeAt(0);
 
+//			console.log("c is: " + c );
+	
+			num = 0;
+
+			if ( c >= 0x41 && c <= 0x5a )
+			{
+				num = ( c - 0x41 );
+
+			}
+
+			else if ( c >= 0x61 && c <= 0x7a )
+			{
+				num = 26;
+
+				num += ( c - 0x61 );
+
+			}
+
+			else if ( c >= 0x30 && c <= 0x39 )
+			{
+				num = 52;
+
+				num += ( c - 0x30 );
+			}
+
+			else if ( c == 0x2b )
+			{
+				num = 62;
+			}
+
+			else
+			{
+				num = 63;
+			}
+			
 			i += 1;
 
-		}
-	
-		console.log(sum/30);
+			puzzle[32] = String.fromCharCode(i);
+
+//			console.log("Proposed Answer: " + ( num & 0x1f ) );
+
+		} while ( ( num & 0x1f ) != ans );
+
+
+		t1 = performance.now();
+
+		console.log("Time Elapsed: " + (t1-t0)/1000 + " seconds"); 
+
+		console.log("The answer we are looking for: " + (ans) );
 
 	}
 
