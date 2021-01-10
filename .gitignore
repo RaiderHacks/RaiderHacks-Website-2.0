@@ -8,6 +8,7 @@ env
 __pycashe__
 run.sh
 *.db
+.vscode
 
 flask_app/static/images/profile_pics/*.jpg
 flask_app/static/images/profile_pics/*.png
