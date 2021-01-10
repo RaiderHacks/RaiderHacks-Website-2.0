@@ -1,0 +1,25 @@
+
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container">
+
+<h1>Blog</h1>
+
+<h1> {{ current_user }}</h1>
+
+<h1> {{ user }} </h1>
+{% for post in posts %}
+  
+    <div class="card p-1 m-1  ">
+      <b>{{ post.author.first_name}}  {{ post.author.last_name}} </b>
+      <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+       <h2><a class="card-title" href="{{ url_for('post.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+    </div>
+  {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}
