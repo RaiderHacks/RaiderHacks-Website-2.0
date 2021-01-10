@@ -1315,4 +1315,18 @@ On registration pages, it is best
 
 to adopt a variant of Friendly PoW's
 
+----------------------------------------
+
+A far more suitable algorithm for CAPTCHA
+
+tests is Equihash.
+
+So far, a valid parameter for this is
+
+the following:
+
+$equihash -n 67 -k 2 -s [SEED HERE]
+
+Remember seed values can be from 0x000000 - 0xffffff
+
 
