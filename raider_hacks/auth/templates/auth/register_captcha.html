@@ -1,39 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-<style>
-	.register{
-		opacity: 0;
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 0;
-		width: 0;
-		z-index: -1;
-	}
-</style>
-
-<link rel="stylesheet" href="static/styles/register2.css">
 
 <link rel="stylesheet" href="static/styles/register.css">
-
 <div class="container">
   <h1 class="text-center">Register</h1>
   <form action="/register" id="postform" method="POST">
-
-    <label class="register" for="first-name"></label>
-    <input class="register" type="text" id="first-name" name="first-name" placeholder="First Name" autcomplete="off"></input>
-
-    <label class="register" for="last-name"></label>
-    <input class="register" type="text" id="last-name" name="last-name" placeholder="Last Name" autcomplete="off"></input>
-
-    <label class="register" for="email-address"></label>
-    <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="register" id="email-address" name="email-address" placeholder="John.Doe@ttu.edu" autocomplete="off"></input>
-
-    <label class="register" for="password_1"></label>
-    <input type="password" class="register" id="password_1" name="password_1" placeholder="RaiderPower" autocomplete="off"></input>
-
-    <label class="register" for="password_2"></label>
-    <input type="password" class="register" id="password_2" name="password_2" placeholder="RaiderPower" autocomplete="off"></input>
 
     <div class="form-group">
       <label for="fname">First Name</label>
