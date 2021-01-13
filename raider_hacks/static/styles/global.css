@@ -104,3 +104,23 @@ html {
   text-align: center;
 } 
 
+
+/* Settings Sections */
+#settings-guild .settings .settings-section {
+  border: 1px solid #E2E8F0; }
+
+.settings .settings-section {
+  margin-bottom: 3rem;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.35rem;
+  overflow: hidden; }
+
+.settings .settings-section .title, .settings .settings-section .body, .settings .settings-section .footer {
+  padding: 1rem; }
+
+.settings .settings-section .title p:last-of-type {
+  margin-bottom: 0; }
+
+.settings .settings-section .footer {
+  background-color: #EDF2F7; }

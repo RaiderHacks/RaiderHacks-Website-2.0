@@ -13,10 +13,10 @@ for fname in md_files:
         content = f.readlines()
         str_content = ' '.join([str(elem) for elem in content]) 
 
+
         c.execute(
             '''INSERT INTO post(title,content,permissions,user_id) VALUES ({},{},1,1);'''.format(fname[:-3],str_content,1,1)
                             )
-
 
 
 
