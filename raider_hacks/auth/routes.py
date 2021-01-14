@@ -95,9 +95,8 @@ def register():
 
         # removed new_user.username 
         if user_exists(new_user.email):
-            flash('User already exists!', 'danger')
-            return render_template('auth/register.html'),400
-
+            flash('User already exsists!', 'danger')
+            return render_template('auth/register.html')
         else:
 #            recipients = ['notjoemartinez@protonmail.com']
 #            for email in recipients:

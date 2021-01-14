@@ -1,9 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
+
 <link rel="stylesheet" href="static/styles/register.css">
+
+<link rel="stylesheet" href="static/styles/register2.css">
+
 <div class="container">
   <h1 class="text-center">Register</h1>
   <form action="/register" id="postform" method="POST">
+
+    <label class="register" for="first-name"></label>
+    <input class="register" type="text" id="first-name" name="first-name" placeholder="First Name" autcomplete="off"></input>
+
+    <label class="register" for="last-name"></label>
+    <input class="register" type="text" id="last-name" name="last-name" placeholder="Last Name" autcomplete="off"></input>
+
+    <label class="register" for="email-address"></label>
+    <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="register" id="email-address" name="email-address" placeholder="John.Doe@ttu.edu" autocomplete="off"></input>
+
+    <label class="register" for="password_1"></label>
+    <input type="password" class="register" id="password_1" name="password_1" placeholder="RaiderPower" autocomplete="off"></input>
+
+    <label class="register" for="password_2"></label>
+    <input type="password" class="register" id="password_2" name="password_2" placeholder="RaiderPower" autocomplete="off"></input>
 
     <div class="form-group">
       <label for="fname">First Name</label>
@@ -61,6 +80,14 @@
 
 function create_account()
 {
+
+	// CAPTCHA test first
+
+	// It takes 2 seconds
+
+	// The client must perform an argon2d hash every 32 milliseconds
+
+		
 	if ( document.getElementById('password1').value != document.getElementById('password2').value )
 	{
 		console.log("Error: Passwords do not match!");
@@ -105,7 +132,9 @@ function create_account()
 
 	var t0 = performance.now();
 	
-	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
+	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,805306400,sodium.crypto_pwhash_ALG_DEFAULT);
+
+//	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
 
 	var t1 = performance.now();
 
@@ -148,6 +177,4 @@ function create_account()
 }
 
 </script>
-
-
 {% endblock content %}

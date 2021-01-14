@@ -17,7 +17,7 @@ def blog():
     # check to see if the user is logged in if this is the case return posts with the pemissions level 1
     if current_user.is_anonymous == True:
         posts = Post.query.filter(Post.permissions==1)
-        return render_template("blog/blog.html", posts=reversed(posts), current_user=current_user) 
+        return render_template("blog/blog.html", posts=posts, current_user=current_user) 
     else:
         # Now that we know the user is logged in we can create a user object 
         user = User.query.filter_by(email=current_user.email).first()

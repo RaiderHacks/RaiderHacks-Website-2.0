@@ -9,8 +9,12 @@ __pycashe__
 run.sh
 *.db
 <<<<<<< HEAD
+<<<<<<< HEAD
 RUNME.sh
 =======
+=======
+.vscode
+>>>>>>> main
 
 flask_app/static/images/profile_pics/*.jpg
 flask_app/static/images/profile_pics/*.png

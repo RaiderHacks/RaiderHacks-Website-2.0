@@ -17,5 +17,3 @@ class NewMember(FlaskForm):
     bio = TextAreaField('Bio', validators=[DataRequired()])
     profile_pic = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Member')
-
-    

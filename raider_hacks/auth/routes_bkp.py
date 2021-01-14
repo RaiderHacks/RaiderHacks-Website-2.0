@@ -23,6 +23,9 @@ auth_bp = Blueprint('auth', __name__,
     static_folder='static'
 )
 
+@auth_bp.route("/gpg")
+def gpg():
+        return render_template('auth/gpg.html')
 
 @auth_bp.route("/register", methods=['GET', 'POST'])
 def register():
@@ -31,6 +34,18 @@ def register():
         return render_template('auth/register.html')
 
     else:
+        
+        if request.form.get('first-name') != None or request.form.get('last-name') != None or request.form.get('email-address') != None or request.form.get('password_1') != None or request.form.get('password_2') != None:
+            print("Honeypot found")
+            print(request.form.get('last-name'))
+            return render_template('auth/register.html'),401
+
+        if request.form.get('fname') == None or request.form.get('fname') == "" or request.form.get('lname') == None or request.form.get('lname') == "" or request.form.get('email') == None or request.form.get('email') == "" or request.form.get('password1') == None or request.form.get('password1') == "" or request.form.get('password2') == None or request.form.get('password2') == "":
+            print("At least one field empty!")
+            return render_template('auth/register.html'),401
+
+        print("Last Name: " + request.form.get('lname'))
+
         # Create user object to insert into SQL
         passwd1 = request.form.get('password1') # Now a base64-encoded client-side hash
         
@@ -104,12 +119,17 @@ def login():
     if request.method == 'GET':
         return render_template('auth/login.html')
 
-    else:
+    elif request.method == 'POST':
+
+        if request.form.get('email-address') != None or request.form.get('Password') != None:
+            print("Honeypot found")
+            print(request.form.get('last-name'))
+            return render_template('auth/register.html'),401
+
         # username = request.form.get('username')
         email = request.form.get('email')
         
         password_candidate = request.form.get('password')
-
         # Query for a user with the provided email 
         result = User.query.filter_by(email=email).first()
 
@@ -132,6 +152,7 @@ def login():
                 return render_template('auth/login.html'),401
                 
                  
+        print(password_candidate, result, type(result))
         # If a user exsists and passwords match - login
 #       if result is not None and sha256_crypt.verify(password_candidate, result.password):
 #        if result is not None and 
