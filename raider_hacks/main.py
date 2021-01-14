@@ -3,11 +3,10 @@ from flask_login import login_user, logout_user, login_required, current_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
 
+
 from raider_hacks import app, db, mail, Message
 from raider_hacks.models import User, Post
 from raider_hacks.forms import PostForm
-
-
 
 @app.route("/")
 def index():
@@ -44,3 +43,19 @@ def forgotpassword():
 @app.route("/forgotusername")
 def forgotusername():
     return render_template("forgotusername.html")
+
+
+@app.route("/forgotpassword/action", methods = ['POST', 'GET'])
+def forgetPasswordAction():
+    if request.method == 'POST':
+        userEmail = request.form['passwordemail']
+        userCurrentPassword = request.form['password']
+        userNewPassword = request.form['password1']
+
+
+
+        userData = User.query.filter_by(User.email == userEmail).first()
+        userData.all()
+
+
+        return "You reached this page"

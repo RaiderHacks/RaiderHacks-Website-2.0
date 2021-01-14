@@ -1,10 +1,10 @@
 from datetime import datetime
-from raider_hacks import db, login_manager
 from flask_login import UserMixin
+from raider_hacks import db
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+#@login_manager.user_loader
+#def load_user(user_id):
+#    return User.query.get(int(user_id))
 
 # 1 user submitted application
 # 2 user manually acceptaed 
@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    # hmac = db.Column(db.String(128), unique=True, nullable=False)
+    hmac = db.Column(db.String(128), unique=True, nullable=False)
     permissions = db.Column(db.Integer(), nullable=False, default=1)
     posts = db.relationship('Post', backref='author', lazy=True)
 

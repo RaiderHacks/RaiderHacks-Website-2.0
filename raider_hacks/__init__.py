@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+#from flask_login import LoginManager
 from flask_mail import Mail, Message
 
 
@@ -22,8 +22,8 @@ db = SQLAlchemy(app)
 
 
 ## login manager stuff
-login_manager = LoginManager()
-login_manager.init_app(app) # this inti_app
+#login_manager = LoginManager()
+#login_manager.init_app(app) # this inti_app
 
 from raider_hacks import main 
 
