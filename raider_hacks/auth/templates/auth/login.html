@@ -1,13 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<link rel="stylesheet" href="static/styles/login2.css">
 <link rel="stylesheet" href="static/styles/login.css">
 <div class="container">
   <form action="/login" id = "postform" method="POST">
+
+    <label class="login" for="email-address"></label>
+    <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$"class="login" id="email-address" name="email-address" placeholder="John.Doe@ttu.edu" autocomplete="off"></input>
+
+    <label class="login" for="Password"></label>
+    <input type="password" class="login" id="Password" name="Password" placeholder="password" autocomplete="off"></input>
+
     <div class="mx-auto">
       <h1 class="text-center"> Login </h1>
     </div>
     <div class="form-group">
+
+
       <label for="email">TTU Email</label>
       <input type="email" pattern="^[A-Za-z0-9._%+-]+@ttu.edu$" class="form-control" id="email" name="email" placeholder="John.Doe@ttu.edu">
     </div>

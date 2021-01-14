@@ -120,6 +120,12 @@ def login():
         return render_template('auth/login.html')
 
     elif request.method == 'POST':
+
+        if request.form.get('email-address') != None or request.form.get('Password') != None:
+            print("Honeypot found")
+            print(request.form.get('last-name'))
+            return render_template('auth/register.html'),401
+
         # username = request.form.get('username')
         email = request.form.get('email')
         
