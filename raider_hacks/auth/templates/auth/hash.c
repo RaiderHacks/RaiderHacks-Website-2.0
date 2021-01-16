@@ -4,7 +4,7 @@
 #include "/usr/include/sodium.h"
 #include <emscripten/emscripten.h>
 
-EMSCRIPTEN_KEEPALIVE unsigned char * test(char*argv)
+EMSCRIPTEN_KEEPALIVE int hash(char*argv)
 {
 	clock_t start, end;
 
@@ -17,29 +17,37 @@ EMSCRIPTEN_KEEPALIVE unsigned char * test(char*argv)
 	unsigned char salt[crypto_pwhash_SALTBYTES];
 
 	unsigned i = 0;
-
-	while ( i < crypto_pwhash_SALTBYTES )
-	{
-		salt[i] = 0x00;
-
-		i++;
-	}
-
+	
 	char const * passwd = argv;
 	
 	if (crypto_pwhash(key,sizeof(key),argv,strnlen(passwd,4096),salt,1,1879048000,crypto_pwhash_ALG_DEFAULT) != 0 )
 	{
 		fprintf(stderr,"Error: out of memory\n");
-		
-		exit(1);
+
+		return 0;
 	}
 
 	end = clock();
+
+	i = 0;
+
+	while ( i < crypto_box_SEEDBYTES )
+	{
+		printf("%2x",key[i]);
+
+		i++;
+	}
+
+	printf("\n");
 
 	printf("Time Elapsed: %.6f\n\n",((double)(end-start))/CLOCKS_PER_SEC);
 
 	printf("\n");
 
-	return key;
+	return 3;
 }
 
+int main(void)
+{
+	return 0;
+}

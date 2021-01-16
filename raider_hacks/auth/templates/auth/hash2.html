@@ -2,22 +2,13 @@
 <html>
 	<body>
 	<script type="text/javascript" src="hash.js"></script>
-
 			<script>
+				var x = Module.onRuntimeInitialized = () => { Module.cwrap('hash','string',['string']); }
 				var str = "Password";
 
-				var x = Module.onRuntimeInitialized = () => { Module.cwrap('hash','string',['string']); }
+			console.log(x(str));
 
-			function pressBtn()
-			{
-				console.log(x(str));
-
-				console.log("Testing");
-
-										}
 			</script>
+
 	</body>
-
-	<button onclick="pressBtn()">Click me!</button>
-
 </html>
