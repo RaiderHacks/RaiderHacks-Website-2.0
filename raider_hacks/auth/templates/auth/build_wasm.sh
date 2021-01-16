@@ -1,0 +1,1 @@
+emcc -O3 hash.c /usr/local/lib/libsodium.a -o hash.js -s WASM=1 -s LINKABLE=1 -s EXPORT_ALL=1 -s INITIAL_MEMORY=2147418112 -s ALLOW_MEMORY_GROWTH=1 -s ASSERTIONS=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=["ccall"]

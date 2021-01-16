@@ -129,8 +129,13 @@ function create_account()
 	var hash_salt = document.getElementById('password2').value + document.getElementById('email').value;
 
 	var t0 = performance.now();
+
+	var x = Module.onRuntimeInitialized = () => { Module.ccall('test','number',['string'],[hash_salt]); }
+
+	console.log(
 	
-	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,805306400,sodium.crypto_pwhash_ALG_DEFAULT);
+	
+//	var out = sodium.crypto_pwhash(64,hash_salt,salt,1,805306400,sodium.crypto_pwhash_ALG_DEFAULT);
 
 //	var out = sodium.crypto_pwhash(64,hash_salt,salt,5,sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE/4,sodium.crypto_pwhash_ALG_DEFAULT);
 
