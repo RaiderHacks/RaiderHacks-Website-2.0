@@ -114,6 +114,7 @@ function create_account()
 		return;
 	}
 
+/*
 	var salt = sodium.randombytes_buf(16);
 
 	var i = 0;
@@ -124,11 +125,8 @@ function create_account()
 
 		i++;
 	}
-
+*/
 	var hash_salt = document.getElementById('password2').value + document.getElementById('email').value;
-
-	console.log(salt);
-
 
 	var t0 = performance.now();
 	
