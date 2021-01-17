@@ -119,11 +119,13 @@ In each hash table entry, the following information for each
 
 client exists:
 
-1. Hash of the following: IPv4 address + port number + 16-byte nonce
+1. 16-byte Blake2b keyed Hash of the following: IPv4 address + port number + 16-byte nonce
 
-2. 16-byte nonce. More on why this is necessary below.
+2. 16-byte Key
 
-3. Timestamp. This marks the time period by which
+3. 16-byte nonce. More on why this is necessary below.
+
+4. 4-byte POST Timestamp. This marks the time period by which the client must not make
 
 the user should **NOT** make more than 3 requests.
 
@@ -164,7 +166,7 @@ Put documentation on how to extract IPv4 address from client here
 
 in Python Flask
 
-That weird function up there "nacl.hash.blake2b" takes the three arguments:
+That weird function up there "nacl.hash.blake2b" takes the four arguments:
 
 1. secret_key
 
@@ -818,22 +820,164 @@ The best way to deal with this is to split the work amongst
 several firewalls evenly. 
 
 
-So let's say one firewall becomes **FIFTEEN** distinct firewalls.
+So let's say one firewall becomes **FIFTEEN** distinct firewalls
+
+each the same size as the original firewall.
 
 So each firewall handles 0xffffffff/15 IPv4 addresses
 
 each.
 
-So each of those 15 firewalls handle: 286331153 IPv4 addresses each.
+So now each of those 15 firewalls handle: 286331153 IPv4 addresses each.
 
 Since each firewall handles one-fifteenth of what the original
 
 firewall used to handle.
 
+The only downside of this approach is that we will use 15 times as much
+
+RAM.
+
+Still, 3.6 MB * 15 = 52.5 MB of RAM.
+
+The VULTR server has 478.0 MiB of RAM free is approximately 501 MB.
+
+MiB Mem :    478.0 total,      7.4 free,    378.3 used,     92.2 buff/cache
+
+The VULTR server will definitely be fine. :)
+
+
+Any server should be okay with surrendering just 52.5 MB of RAM to handle
+
+a DDOS attack. No server should be brought down just because of it.
+
+Now the DDOS attacker will need to send requests at 15 times the
+
+original rate to replicate the
+
+same harmful effect on the server.
+
+
+Now that the Firewall system has 15 times the memory space, it can evenly
+
+divide the work amongst each of the fifteen hash tables.
+
+So what is the threshold for that harmful rate?
+
+Its
+
+
 -----------------------------------------------
 
 Web Application Firewall Version 2.0
 
-Version 2.0 will not js
+Version 2.0 will not just deal with excessive POST requests but also
+
+GET requests.
+
+
+The problem with GET requests is that this is where the client
+
+may not necessarily have visited the website yet.
+
+
+You cannot just perform the HMAC quiz we did for POST
+
+requests since we can expect the client to have visited
+
+the site at least once previously.
+
+
+To prevent a client from making excessive GET requests, the server
+
+can simply time out the client if it makes requests at superhuman
+
+speeds.
+
+Believe it or not, a human cannot click something faster than 10 clicks/second.
+
+Don't believe me?
+
+Here, try to prove me wrong:
+
+https://clickspeedtest.net/1-seconds.php
+
+I'll wait.
+
+Alright. So if the Web Firewall finds a client making more than
+
+10 clicks within a second---it is banned for 3 minutes
+
+straight without mercy.
+
+There--that oughta keep those pesky bots at bay.
+
+Since we obviously cannot rely on HMACs to test if a client is making
+
+excessive requests when they are making GET requests, clients will
+
+instead be required to solve a puzzle that takes an average of
+
+~100 milliseconds to execute.
+
+
+The Equihash algorithm can be set to force the client to use
+
+a certain amount of RAM to solve the puzzle, this way, regardless
+
+of how CPU-intensive the client's machine is, it will take around
+
+the same amount of time as any other machine to solve the puzzle--
+
+ less than 100 milliseconds. Before the client gets the information they
+
+are asking for, they need to submit the puzzle solution in a
+
+second HTTP GET Request. There is no need to hide the HMAC
+
+solution as the puzzle solution is not easy to brute-force
+
+guess (256 bits of entropy).
+
+Any client that makes an HTTP GET request with the actual
+
+puzzle solution in their HTTP GET request in
+
+(applicaton/x-www-encoded-form) will actually get the contents
+
+of the page they are looking for.
+
+Any client that tries to make an HTTP GET request with a wrong
+
+solution gets banned :).
+
+
+Most bots are not designed to process Javascript. But for those
+
+that do, this process will still slow them down by 100 millliseconds.
+
+
+To account for this, two new fields will have to be appended to
+
+the original hash table entry fields:
+
+
+1. 16-byte Blake2b keyed Hash of the following: IPv4 address + port number + 16-byte nonce
+
+2. 16-byte Key
+
+3. 16-byte nonce. More on why this is necessary below.
+
+4. 4-byte POST Timestamp. This marks the time period by which the client must not make
+
+more than 3 POST requests.
+
+5. 4-byte GET TIMESTAMP 
+
+Ok, so that's (16 * 3 + 4 * 2) == 48 + 8 = 56 bytes
+
+So that's now 56 bytes * 100,000 is aproximately 5.6 MB. Oh well.
+
+----------------------------------------------------------------------------
 
 
