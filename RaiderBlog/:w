@@ -1,0 +1,257 @@
+# Guide To SSH
+
+## By Tanveer Salim
+
+<p>SSH stands for the Secure Shell Protocol. It is one of the most famous [Linux commands](https://github.com/RaiderHacks/RaiderHacks-Website-2.0/blob/auth/Introduction_To_Linux.md)--ever.
+
+<br>
+
+This is the command the world's best developers use to control [their websites](https://linuxgazette.net/issue59/correa.html).
+
+<br>
+
+Here at RaiderHacks, the system administrators [(Joseph and I)](https://raiderhacks.com/members) always
+
+<br>
+
+use SSH to authenticate into the RaiderHacks server (available at IPv4 address 155.138.209.188).
+
+<br>
+
+Let's get int othe history of how SSH became a necessity.
+</p>
+
+<p>
+In the beginning there was Telnet. It was a very simple Linux command that allowed a person
+
+<br>
+
+to establish a simple connection with a server. Telnet basically did everything that
+
+<br>
+
+SSH was allowed to do--except it did not use authenticated end-to-end encryption to
+
+<br>
+keep the information exchanged between server and client private.
+
+<br>
+
+To make this blog as fun as possible to read, let's go over all the nastiest attacks
+
+<br>
+
+that a [Man-In-The-Middle Attacker](https://us.norton.com/internetsecurity-wifi-what-is-a-man-in-the-middle-attack.html) can do without the encryption protection SSH
+
+<br>
+
+provides.
+
+</p>
+
+The Norton blog sure provides **a lot** of attacks that a Man-In-The-Middle Attacker can perform.
+
+<br>
+
+<ol>
+
+<li>IP Spoofing</li>
+
+<p>One of the worst things about the Internet is that whoever is sending data to a recipient
+
+<br>
+
+has near perfect control over what information they can send--even if its misleading.
+
+<br>
+
+Today, spam bots fake their own IPv4 addresses to bypass [weak Firewalls](https://us.norton.com/internetsecurity-malware-ip-spoofing-what-is-it-and-how-does-it-work.html)
+
+<br>
+
+But clients are not the only thing on the web that can fake their own IPv4 address.
+
+<br>
+
+So can fake websites. A Man-In-The-Middle-Attacher can easily see what information a
+
+<br>
+
+client and server are broadcasting with each other.
+
+<br>
+
+Once the attacker learns what kind of information a client expects, it can start
+
+<br>
+
+sending messages to impersonate the website.
+
+<br>
+
+For all of you visual learners, here is an image that depicts what I am talking about:
+
+<br>
+
+![IP Address  Spoofing](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fen.vcenter.ir%2Fwp-content%2Fuploads%2F2017%2F01%2FWhat-is-IP-Spoofing.jpg&f=1&nofb=1) "IP Address Spoofing"]
+
+Let's pretend the Web server with IPv4 address 132.12.25.1 has a web application firewall.
+
+<br>
+
+It is the firewall's job to block clients that have made excessive HTTP requests in the past.
+
+<br>
+
+But when said firewall receives information from a spoofed IPv4 address, guess which IPv4
+
+<br>
+
+address is going to get blocked?
+
+<br>
+
+Hint: Not Hacker (IPv4 address: 168.12.25.5)
+
+<br>
+
+You can start to see how spoofing IPv4 addresses can cause serious problems for servers
+
+<br>
+
+in being able to handle requests fast enough for everyone.
+
+<br>
+
+There are 4,294,967,295 addresses available in the IPv4 address space, so for each attacker
+
+<br>
+
+that makes each request with each and every new IPv4 address...the client that seriously
+
+<br>
+
+does have that IPv4 address gets blocked from the server when the firewall decides
+
+<br>
+
+that the client with said IPv4 address is making too many requests at once.
+
+<br>
+
+You can easily start to see how easily an attacker that spoofs their IPv4 address
+
+<br>
+
+can block many IPv4 addresses in a short period of time.
+
+<br>
+
+If you know Python, the following code will tell you how many seconds it takes
+
+<br>
+
+to traverse through all 4,294,967,295 IPv4 addresses:
+
+
+```
+import time
+
+i=0
+
+begin = time.time()
+
+while i <= 0xffffffff:
+    i += 1
+
+end = time.time()
+
+print(end-begin)
+
+364.59005427360535
+
+```
+
+So it took ~365 seconds just to traverse through all numbers in an IPv4
+
+address space.
+
+<br>
+
+Now, it takes a Python script ( e.g. a spam bot ) at least 10 milliseconds
+
+<br>
+
+to actually transfer a packet to a server on average.
+
+<br>
+
+But for an attacker to exhuast all IPv4 addressses against a dumb firewall
+
+<br>
+
+that cannot check if an IPv4 address is spoofed:
+
+```
+4,294,967,295 IPv4 addresses x ( 1 request / IPv4 address ) * ( 10 milliseconds / 1 request ) *  ( 1 second / 1000 milliseconds ) * ( 1 minute / 60 seconds ) * ( 1 hour / 60 minutes ) * ( 1 day / 24 hours )  == 497.10269618056 days
+
+```
+
+Okay, fine. So it would simply take too long for an attacker to actually exhaust all IPv4 address. 
+
+However, an attacker still target a specific subset of IPv4 addresses--such as that allocated
+
+for a specific region or an organization. And this can block such people out of the site
+
+unfairly.
+
+For your convenience, here's a fun map brought to you by ![XKCD](https://imgs.xkcd.com/comics/map_of_the_internet.jpg)
+
+</p>
+
+<p>
+CloudFlare also points out that spoofing an IPv4 address with the fixed IPv4 address of an
+
+<br>
+
+established website 
+</p>
+
+<li>DNS Spoofing (DNS Cache Poisoning)</li>
+
+<p>Without the protection end-to-end encryption provides, a Man-In-The-Middle Attacker
+
+<br>
+
+can first trick a DNS server--a server that translates a website's domain to an IPv4
+
+<br>
+
+address--into routing all requests to a malicious IPv4 address set by the Attacker.
+
+<br>
+
+It is not that hard to make a website look like another's.
+
+<br>
+
+Especially since you can download the HTML file of any webpage visible in the first
+
+<br>
+
+place using tools like [curl](https://curl.se/), [wget](https://www.gnu.org/software/wget/),
+
+or best of all: [aria2](https://aria2.github.io/)
+
+<br>
+
+<li> 
+
+
+
+
+
+
+
+
+

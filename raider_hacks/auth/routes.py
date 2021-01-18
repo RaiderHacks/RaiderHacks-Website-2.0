@@ -38,8 +38,9 @@ def register():
         if request.form.get('first-name') != None or request.form.get('last-name') != None or request.form.get('email-address') != None or request.form.get('password_1') != None or request.form.get('password_2') != None:
             print("Honeypot found")
             print(request.form.get('last-name'))
-            return render_template('auth/register.html'),401
-
+           #return render_template('auth/register.html'),401
+            return ('',204)
+        
         if request.form.get('fname') == None or request.form.get('fname') == "" or request.form.get('lname') == None or request.form.get('lname') == "" or request.form.get('email') == None or request.form.get('email') == "" or request.form.get('password1') == None or request.form.get('password1') == "" or request.form.get('password2') == None or request.form.get('password2') == "":
             print("At least one field empty!")
             return render_template('auth/register.html'),401
@@ -123,7 +124,8 @@ def login():
         if request.form.get('email-address') != None or request.form.get('Password') != None:
             print("Honeypot found")
             print(request.form.get('last-name'))
-            return render_template('auth/register.html'),401
+            #return render_template('auth/register.html'),401
+            return ('',204)
 
         # username = request.form.get('username')
         email = request.form.get('email')
@@ -134,7 +136,8 @@ def login():
 
         if result is None:
             flash('Incorrect Login!', 'danger')
-            return render_template('auth/login.html'),401
+            #return render_template('auth/login.html'),401
+            return ('Login Fail',401)
         
         else:
             salted_hash =  password_candidate + result.salt

@@ -1,5 +1,7 @@
 # Introduction To Linux
 
+## By Tanveer Salim
+
 <p>Did you know that Linux used to be called [Freakx](https://en.wikipedia.org/wiki/History_of_Linux)?
 
 <br>
