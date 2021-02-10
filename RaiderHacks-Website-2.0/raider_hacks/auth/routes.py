@@ -13,6 +13,9 @@ auth_bp = Blueprint('auth', __name__,
     static_folder='static'
 )
 
+@auth_bp.route("/gpg")
+def gpg():
+        return render_template('auth/gpg.html')
 
 @auth_bp.route("/register", methods=['GET', 'POST'])
 def register():
@@ -45,11 +48,11 @@ def register():
             flash('User already exsists!', 'danger')
             return render_template('auth/register.html')
         else:
-            recipiants = ['Tanveer.Salim@ttu.edu']
-            for email in recipiants:
-                msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
-                msg.body = "{} {} would like to make an account on raiderHacks.com using {} also click this link https://raiderhacks.com/".format(new_user.first_name, new_user.last_name, new_user.email)
-                mail.send(msg)
+#            recipiants = ['Tanveer.Salim@ttu.edu']
+#            for email in recipiants:
+#                msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
+#                msg.body = "{} {} would like to make an account on raiderHacks.com using {} also click this link https://raiderhacks.com/".format(new_user.first_name, new_user.last_name, new_user.email)
+#                mail.send(msg)
 
             # Insert new user into SQL
             db.session.add(new_user)

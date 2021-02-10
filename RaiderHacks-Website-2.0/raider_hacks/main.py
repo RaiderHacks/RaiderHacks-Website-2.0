@@ -15,5 +15,14 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/competitiveprogramming")
+def comp_prog():
+    return render_template("compprog.html")
 
+@app.route("/ctf")
+def ctf():
+    return render_template("ctf.html")
 
+@app.route("/hackathons")
+def hackathons():
+    return render_template("hackathons.html")

@@ -7,7 +7,7 @@ import os, random
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = str(os.urandom(16))
+app.config['SECRET_KEY'] = 'mXtMpIWMxnRdW0Fr'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
