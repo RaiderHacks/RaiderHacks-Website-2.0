@@ -1,0 +1,126 @@
+html {
+  font-family: Helvetica, Arial, sans-serif ;
+}
+
+body {
+  background: #fafafa;
+  color: #333333;
+}
+
+.content {
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+
+
+.bg-steel {
+  background-color: #5f788a;
+}
+
+.site-header .navbar-nav .nav-link {
+  color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-title {
+  color: #444444;
+}
+
+a.article-title:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}
+
+/* Makes each jumbotron take up a full page on desktop */
+section {
+  padding-top: 15%;
+  padding-bottom: 15%;
+}
+
+/* Does the smooth scrolling effect on the homepage */
+html {
+  scroll-behavior: smooth;
+}
+
+.texty{
+  text-align: center;
+}
+
+
+
+#abouttext{
+  text-align: center;
+} 
+
+
+/* Settings Sections */
+#settings-guild .settings .settings-section {
+  border: 1px solid #E2E8F0; }
+
+.settings .settings-section {
+  margin-bottom: 3rem;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.35rem;
+  overflow: hidden; }
+
+.settings .settings-section .title, .settings .settings-section .body, .settings .settings-section .footer {
+  padding: 1rem; }
+
+.settings .settings-section .title p:last-of-type {
+  margin-bottom: 0; }
+
+.settings .settings-section .footer {
+  background-color: #EDF2F7; }

@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block header %}
+
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/members.css') }}">
+<main role="main">
+
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">Membership</h1>
+        <p class="lead text-muted">
+	RaiderHacks members come from a diverse background of academic disciplines, no programming knowledge is required to join and there are no dues. Fill out this <a href="#sign-up-form">form</a> and we will reach out with more information on how you can join. 
+	</p>
+      </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+      <div class="container">
+
+        <div class="row">
+          {% for member in members %}
+          <div class="col-md-4">
+            <a href="{{ url_for('members.member', member_id=member.id) }}">
+
+            <div class="card mb-4 box-shadow">
+              <div>
+              <img class="card-img" src="static/images/profile_pics/{{ member.profile_pic }}" alt="Card image cap">
+              <div class="card-img-overlay"> 
+                <h5 class="card-title" id="cn"> {{ member.fname }} {{ member.lname }} </h5>
+
+              </div>
+            </div>
+            
+            </a>  
+            
+            </div>
+          </div>
+
+          {% endfor %}
+
+      
+      
+        </div>
+      </div>
+    </div>
+    
+ <div  class="row" id="sign-up-form">
+
+	<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScfA3JfDAE7yxncOYVsD_eeoNQ3TVJdRW9A3oJ1R1Yy8q9eDA/viewform?embedded=true" width="640" height="964" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+
+ </div>
+  </main>
+
+
+
+
+   
+ 
+
+{% endblock %} 

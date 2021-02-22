@@ -1,0 +1,143 @@
+{% extends 'layout.html'%}
+
+{% block content %}
+
+
+<div class="container">
+<section id="whatis-rh">
+  <div class="row" >
+
+        <div class="text-center shadow-lg p-3 rounded-3">
+		<h1 class="display-4">What is RaiderHacks?</h1>
+            <p class="lead">       
+                RaiderHacks is a student 
+        organization at Texas Tech 
+        dedicated to bringing students 
+        together who share a passion 
+        for Competitive Programming, 
+        Cyber Security and 
+        Attending Hackathons.</p>
+                <hr class="my-4">
+        
+        <!-- for buttons -->
+        <div class="row">
+
+            <div class="col">
+                <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/members" role="button">Membership</a>
+                </p>
+            </div>
+
+            <div class="col">
+
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg page-scroll" href="#comp-p" role="button">Competitive Programming?</a>
+                </p>
+
+            </div>
+
+        </div> <!--.buttons row -->
+
+        </div> <!-- .jumbotron -->
+
+  </div>  <!-- .row -->
+</section>
+
+<section id="comp-p">
+  <div class="row " >
+
+    <div class="text-center shadow-lg p-3 rounded-3">
+        <h1 class="display-4">Competitive Programming</h1>
+        <p class="lead">       
+            Once you enter in programming 
+            you just don’t learn how to code
+             but you also learn the “art of thinking”, 
+            by  breaking your code into smaller 
+            chunks and then using your logic-based
+             creativity to solve a problem from 
+            different angles.
+        </p>
+        <hr class="my-4">
+    
+    <div class="row">
+        <div class="col">
+            <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/competitiveprogramming" role="button">More About Competitive Programing</a>
+            </p>
+
+        </div>
+
+        <div class="col">
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="#whatis-cs" role="button">Cyber Security CTF</a>
+            </p>
+        </div>
+    </div> <!--row -->
+    </div> <!-- .jumbotron -->
+
+</div>  <!-- .row -->
+</section>
+
+<section id="whatis-cs">
+<div class="row" >
+
+    <div class="text-center shadow-lg p-3 rounded-3">
+        <h1 class="display-4">What is Cyber Security CTF?</h1>
+        <p class="lead">       
+            Cyber security is a high priority of companies, small and big, as cyber attacks have been on the rise in recent years. 
+            In response to these attacks, security professionals and college students have been through rigorous training as how 
+            hackers are able to get into the companies and how to defend against them. 
+            One way of cyber security training is through a cyber security capture the flag (CTF) event. 
+        </p>
+        <hr class="my-4">
+    
+    <div class="row">
+        <div class="col">
+            <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/ctf" role="button">More About CTF</a>
+            </p>
+
+        </div>
+
+        <div class="col">
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="#whatis-hack" role="button">Hackathons</a>
+            </p>
+        </div>
+    </div> <!--row -->
+    </div> <!-- .jumbotron -->
+
+</div> <!--.row-->
+</section>
+
+<section id="whatis-hack">
+<div clas="row" >
+    <div class="text-center shadow-lg p-3 rounded-3">
+        <h1 class="display-4">What is a Hackathon?</h1>
+        <p class="lead">       
+            A hackathon is a design sprint-like event; often, in which computer programmers and others involved in software development, 
+            including graphic designers, interface designers, project managers, domain experts, and others collaborate intensively on software projects 
+        </p>
+        <hr class="my-4">
+    
+    <div class="row">
+        <div class="col">
+            <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/hackathons" role="button">More About Hackathons</a>
+            </p>
+
+        </div>
+
+        <div class="col">
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="#whatis-rh" role="button">Top </a>
+            </p>
+        </div>
+    </div> <!--row -->
+    </div> <!-- .jumbotron -->
+
+</div>  <!-- .row -->
+</section>
+</div>
+{% endblock %}
+
