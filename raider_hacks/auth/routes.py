@@ -72,7 +72,7 @@ def register():
 
 
         # Checks if passwords match
-        if passwd1 != passwd2 or passwd1 == None:
+        if passwd1 != passwd2 or passwd1 == None or passwd2 == None:
             flash('Password Error!', 'danger')
             return render_template('auth/register.html'),400
 
@@ -96,14 +96,9 @@ def register():
 
         # removed new_user.username 
         if user_exists(new_user.email):
-            flash('User already exsists!', 'danger')
+            flash('User already exists!', 'danger')
             return render_template('auth/register.html')
         else:
-#            recipients = ['notjoemartinez@protonmail.com']
-#            for email in recipients:
-#                msg = Message('Flask-Mail Test', sender = 'raiderHacksMail@gmail.com', recipients = [email])
-#                msg.body = "{} {} would like to make an account on raiderHacks.com using {}".format(new_user.first_name, new_user.last_name, new_user.email)
-#                mail.send(msg)
             # Insert new user into SQL
             db.session.add(new_user)
             db.session.commit()
