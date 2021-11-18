@@ -7,13 +7,13 @@ import os, random
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'mXtMpIWMxnRdW0Fr'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SECRET_KEY'] = ''
+app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465 # is this port open on deployment?
-app.config['MAIL_USERNAME'] = 'raiderHacksMail@gmail.com'
-app.config['MAIL_PASSWORD'] = 'BqV7VMFpg8vo5ZaGXxJqxQKBenhpDypWjeQ2uQPZDwzb3CQstTHH8JE5Ry'
+app.config['MAIL_USERNAME'] = ''
+app.config['MAIL_PASSWORD'] = ''
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USE_TLS'] = True
 
